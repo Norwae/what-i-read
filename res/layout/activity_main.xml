@@ -25,7 +25,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_toRightOf="@id/editText1"
-        android:text="@string/scan" />
+        android:text="@string/action_scan" />
 
     <ListView
         android:id="@+id/listView1"

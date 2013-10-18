@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <TableLayout android:id="@+id/header_table"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" >
+
+        <TableRow
+            android:id="@+id/tableRow1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+			
+		    <TextView
+	    	    android:id="@+id/titleLabel"
+		        android:text="@string/title" />
+		    <TextView android:id="@+id/title"/>    
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/tableRow2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:id="@+id/authorLabel"
+                android:text="@string/author" />
+   			
+   			<TextView android:id="@+id/author"/>
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/tableRow3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+   			  <TextView
+        			android:id="@+id/isbnLabel"
+        			android:text="@string/isbn" />
+   			  
+   			  <TextView
+        			android:id="@+id/isbn"/>
+   		</TableRow>
+
+        <TableRow
+            android:id="@+id/tableRow4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+   			  <TextView
+			        android:id="@+id/firstReadLabel"
+			        android:text="@string/firstRead" />            
+             <TextView
+			        android:id="@+id/firstRead" />
+        </TableRow>
+        <TableRow
+            android:id="@+id/tableRow5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+            <TextView
+		        android:id="@+id/ratingLabel"
+		        android:text="@string/rating" />
+            
+            
+		    <RatingBar
+		        android:id="@+id/rating" />
+        </TableRow>
+    </TableLayout>
+	
+    <EditText
+        android:id="@+id/comment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/header_table"
+        android:ems="10"
+        android:inputType="textMultiLine" >
+
+        <requestFocus />
+    </EditText>
+
+    <Button
+        android:id="@+id/cancel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/save"
+        android:layout_alignBottom="@+id/save"
+        android:layout_toRightOf="@+id/save"
+        android:text="@string/action_cancel" />
+
+    <Button
+        android:id="@+id/save"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/comment"
+        android:text="@string/action_save" />
+</RelativeLayout>
