@@ -19,4 +19,10 @@
    
     <string name="coverImage">Cover</string>
     
+    <string name="query.localDB">Querying local database</string>
+    <string name="query.googleBooks">Querying Google Books database</string>
+    
+    <string name="progress.pleaseWait">Looking for your book, please wait</string>
+    <string name="progress.initial">Analyzing ISBN</string>
+    
 </resources>

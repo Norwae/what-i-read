@@ -23,7 +23,11 @@ public class BookDatabase {
 			return infos.get(0);
 		}
 		
-		return new BookInfo("The Hook Mountain Massacre", "Nicolas Louge", "9781601250384", new Date(), 4, "Gore-drenched but gripping");
+		return null;
+	}
+
+	public Context getOriginContext() {
+		return ctx;
 	}
 	
 
