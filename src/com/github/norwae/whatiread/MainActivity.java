@@ -3,6 +3,7 @@ package com.github.norwae.whatiread;
 import java.util.Collections;
 
 import com.github.norwae.whatiread.db.BookDatabase;
+import com.github.norwae.whatiread.db.BookDatabaseHelper;
 import com.github.norwae.whatiread.db.BookInfo;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
@@ -17,10 +18,14 @@ import android.widget.Button;
 public class MainActivity extends Activity {
 
 	private static final String EAN_13_TYPE = "EAN_13";
+	private BookDatabase bookDatabase;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
+		bookDatabase = new BookDatabase(this);
+		
 		setContentView(R.layout.activity_main);
 		
 		Button b = (Button) findViewById(R.id.scan);
@@ -50,7 +55,7 @@ public class MainActivity extends Activity {
 		IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
 		if (scanResult != null) {
 			String code = scanResult.getContents();
-			BookInfo info = BookDatabase.getForEAN13(code);
+			BookInfo info = bookDatabase.getForEAN13(code);
 			
 			if (info != null) {
 				Intent transfer = new Intent(this, DisplayBookActivity.class);
