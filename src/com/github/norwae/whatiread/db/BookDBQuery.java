@@ -8,7 +8,7 @@ import com.github.norwae.whatiread.R;
 
 public class BookDBQuery extends CallbackAsync<Object, String, List<BookInfo>> {
 
-	protected BookDBQuery(AsyncCallbackReceiver<List<BookInfo>, String> receiver) {
+	public BookDBQuery(AsyncCallbackReceiver<List<BookInfo>, String> receiver) {
 		super(receiver);
 	}
 

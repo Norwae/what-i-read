@@ -14,17 +14,23 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:hint="@string/input_title"
-        android:ems="10" >
+        android:ems="6"
+        android:hint="@string/input_title" >
 
         <requestFocus />
     </EditText>
-
+	<Button
+        android:id="@+id/searchTrigger"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/search"
+        
+        android:text="@string/action_search" />
     <Button
         android:id="@+id/scan"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toRightOf="@id/search"
+        android:layout_toRightOf="@id/searchTrigger"
         
         android:text="@string/action_scan" />
 

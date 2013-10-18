@@ -4,6 +4,7 @@
     <string name="app_name">What I Read</string>
     <string name="action_settings">Settings</string>
     <string name="action_scan">Scan</string>
+    <string name="action_search">Search</string>
     <string name="action_save">Save</string>
     <string name="action_cancel">Cancel</string>
     
