@@ -15,7 +15,8 @@
 		    <TextView
 	    	    android:id="@+id/titleLabel"
 		        android:text="@string/title" />
-		    <TextView android:id="@+id/title"/>    
+		    <TextView android:id="@+id/title"/>
+    
         </TableRow>
 
         <TableRow
@@ -65,6 +66,15 @@
 		        android:id="@+id/rating" />
         </TableRow>
     </TableLayout>
+    
+    
+
+    <ImageView
+        android:id="@+id/coverImage"
+        android:contentDescription="@string/coverImage"
+        android:layout_toRightOf="@id/header_table"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
 	
     <EditText
         android:id="@+id/comment"

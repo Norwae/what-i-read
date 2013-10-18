@@ -16,5 +16,7 @@
     <string name="comment">Comment</string>
     <string name="rating">Rating</string>
     <string name="firstRead">First Read</string>
+   
+    <string name="coverImage">Cover</string>
     
 </resources>

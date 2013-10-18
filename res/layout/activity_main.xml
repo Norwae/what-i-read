@@ -9,7 +9,7 @@
     tools:context=".MainActivity" >
 
     <EditText
-        android:id="@+id/editText1"
+        android:id="@+id/search"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
@@ -21,17 +21,18 @@
     </EditText>
 
     <Button
-        android:id="@+id/button1"
+        android:id="@+id/scan"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toRightOf="@id/editText1"
+        android:layout_toRightOf="@id/search"
+        
         android:text="@string/action_scan" />
 
     <ListView
-        android:id="@+id/listView1"
+        android:id="@+id/bookList"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/editText1"
+        android:layout_below="@+id/search"
         android:layout_centerHorizontal="true" >
     </ListView>
 
