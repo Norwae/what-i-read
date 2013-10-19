@@ -1,4 +1,4 @@
-package com.github.norwae.whatiread.db;
+package com.github.norwae.whatiread.data;
 
 import java.io.Serializable;
 import java.util.Date;

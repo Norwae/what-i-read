@@ -27,3 +27,7 @@ proguard/
 *.ipr
 *.iws
 .idea/
+
+# private key files (development use only!)
+
+Key.java

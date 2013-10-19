@@ -1,6 +1,7 @@
 package com.github.norwae.whatiread;
 
-import com.github.norwae.whatiread.db.BookInfo;
+
+import com.github.norwae.whatiread.data.BookInfo;
 
 import android.app.Activity;
 import android.os.Bundle;

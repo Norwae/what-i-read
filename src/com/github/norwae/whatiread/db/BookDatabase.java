@@ -3,6 +3,9 @@ package com.github.norwae.whatiread.db;
 import java.util.Date;
 import java.util.List;
 
+import com.github.norwae.whatiread.data.BookInfo;
+import com.github.norwae.whatiread.data.ISBN13;
+
 import android.content.Context;
 
 public class BookDatabase {
@@ -16,8 +19,8 @@ public class BookDatabase {
 	}
 	
 
-	public BookInfo getForEAN13(String ean13) {
-		List<BookInfo> infos = bookDatabaseAccess.selectBookInfo(ctx, BookDatabaseHelper.ISBN_COLUMN + " == ?", ean13);
+	public BookInfo getForISBN13(ISBN13 isbn) {
+		List<BookInfo> infos = bookDatabaseAccess.selectBookInfo(ctx, BookDatabaseHelper.ISBN_COLUMN + " == ?", isbn.toString());
 		
 		if (!infos.isEmpty()) {
 			return infos.get(0);
