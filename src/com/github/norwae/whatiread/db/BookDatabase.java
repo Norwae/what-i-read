@@ -1,12 +1,11 @@
 package com.github.norwae.whatiread.db;
 
-import java.util.Date;
 import java.util.List;
+
+import android.content.Context;
 
 import com.github.norwae.whatiread.data.BookInfo;
 import com.github.norwae.whatiread.data.ISBN13;
-
-import android.content.Context;
 
 public class BookDatabase {
 
@@ -33,9 +32,15 @@ public class BookDatabase {
 		return ctx;
 	}
 	
+	public void close() {
+		bookDatabaseAccess.close();
+	}
+	
 
 	public List<BookInfo> getForString(String arg) {
 		String arg2 = "%" + arg + "%";
+		
 		return bookDatabaseAccess.selectBookInfo(ctx, BookDatabaseHelper.TITLE_COLUMN + " LIKE ? OR " + BookDatabaseHelper.AUTHOR_COLUMN + " LIKE ?", arg2, arg2);
+		
 	}
 }

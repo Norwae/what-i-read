@@ -12,8 +12,11 @@ public class DBBookLookupProvider implements ISBNLookupProvider {
 	@Override
 	public BookInfo getForISBN13(ISBN13 isbn, Context sourceActivity) {
 		BookDatabase db = new BookDatabase(sourceActivity);
-		
-		return db.getForISBN13(isbn);
+		try {
+			return db.getForISBN13(isbn);
+		} finally {
+			db.close();
+		}
 	}
 
 	@Override

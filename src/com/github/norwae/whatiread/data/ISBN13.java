@@ -5,9 +5,7 @@ import java.util.regex.Pattern;
 public final class ISBN13 {
 	private static Pattern ISBN_PATTERN = Pattern.compile("97[89]\\d{10}");
 	public static ISBN13 parse(String string) {
-		if (string != null) {
-			string = string.replaceAll("[ \t-_]+", "");
-			
+		if (string != null) {			
 			if (ISBN_PATTERN.matcher(string).matches()){
 				return new ISBN13(string);
 			}

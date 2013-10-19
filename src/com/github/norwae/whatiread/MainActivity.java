@@ -112,7 +112,10 @@ public class MainActivity extends Activity {
 			
 			@Override
 			public void onAsyncComplete(BookInfo anObject) {
-				progressDialog.dismiss();
+				if (progressDialog.isShowing()) {
+					progressDialog.dismiss();
+				}
+				
 				if (anObject != null) {
 					Intent tempIntent = new Intent(MainActivity.this, DisplayBookActivity.class);
 					tempIntent.putExtra(DisplayBookActivity.BOOK_INFO_VARIABLE, anObject);

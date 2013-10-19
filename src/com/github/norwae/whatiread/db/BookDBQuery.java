@@ -24,9 +24,13 @@ public class BookDBQuery extends CallbackAsync<String, String, List<BookInfo>> {
 		String query = (String) params[0];
 
 		publishProgress(context.getString(R.string.query_localDB));
-		BookDatabase db = new BookDatabase(context);	
+		BookDatabase db = new BookDatabase(context);
 		
-		return db.getForString(query);
+		try {
+			return db.getForString(query);
+		} finally {
+			db.close();
+		}
 	}
 
 
