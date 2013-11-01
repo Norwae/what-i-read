@@ -24,6 +24,7 @@
     <string name="query.googleBooks">Querying Google Books database</string>
     
     <string name="progress.pleaseWait">Looking for your book, please wait</string>
-    <string name="progress.initial">Analyzing ISBN</string>
-    
+    <string name="progress.initial">Performing background work</string>
+    <string name="progress.openDB">Connecting to book database</string>
+	<string name="progress.saveBook">Saving book information</string>    
 </resources>

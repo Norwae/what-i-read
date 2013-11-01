@@ -1,28 +1,28 @@
 package com.github.norwae.whatiread.db;
 
+import java.text.DateFormat;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import com.github.norwae.whatiread.data.BookInfo;
-
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.text.format.DateFormat;
+import android.database.sqlite.SQLiteStatement;
 import android.util.Log;
+
+import com.github.norwae.whatiread.data.BookInfo;
 
 public class BookDatabaseHelper extends SQLiteOpenHelper {
 
 
 	private static final int DATABASE_VERSION = 1;
-
 	private static final String DATABASE_NAME = "com.github.norwae.whatiread.db.BookDatabase";
-
 	private static final String BOOKSHELF_TABLE_NAME = "bookshelf";
+	private static final DateFormat SIMPLE_DATE = new SimpleDateFormat("YYYY-MM-DD");
 	
 	static final String ISBN_COLUMN = "isbn";
 	static final String AUTHOR_COLUMN = "author";
@@ -41,12 +41,20 @@ public class BookDatabaseHelper extends SQLiteOpenHelper {
 	};
 	
 	private static final String CREATE_BOOKINFO_TABLE = "CREATE TABLE " + BOOKSHELF_TABLE_NAME + " ("
-			+ ISBN_COLUMN + " TEXT,"
+			+ ISBN_COLUMN + " TEXT PRIMARY KEY,"
 			+ TITLE_COLUMN + " TEXT," 
 			+ AUTHOR_COLUMN + " TEXT,"
 			+ RATING_COLUMN + " INTEGER,"
 			+ COMMENT_COLUMN + " TEXT,"
 			+ SCANNED_COLUMN + " TEXT);";
+
+	private static final String INSERT_OR_UPDATE_BOOK_INFO = "INSERT OR UPDATE INTO " + BOOKSHELF_TABLE_NAME + " VALUES ("
+			+ ISBN_COLUMN + ","
+			+ TITLE_COLUMN + ","
+			+ AUTHOR_COLUMN + ","
+			+ RATING_COLUMN + ","
+			+ COMMENT_COLUMN + ","
+			+ SCANNED_COLUMN + ") VALUES (?, ?, ?, ?, ?, ?)";
 
 	public BookDatabaseHelper(Context context) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -83,7 +91,7 @@ public class BookDatabaseHelper extends SQLiteOpenHelper {
 			String comment = cursor.getString(commentIdx);
 			Date scanned;
 			try {
-				scanned = DateFormat.getDateFormat(ctx).parse(cursor.getString(scannedIdx));
+				scanned = ((DateFormat) SIMPLE_DATE.clone()).parse(cursor.getString(scannedIdx));
 			} catch (ParseException e) {
 				Log.e("Book Database", "Failed to convert stored scan-date", e);
 				scanned = new Date();
@@ -96,6 +104,19 @@ public class BookDatabaseHelper extends SQLiteOpenHelper {
 		}
 		
 		return rv;
+	}
+
+	public void saveOrUpdate(BookInfo bookInfo) {
+		SQLiteDatabase db = getWritableDatabase();
+		SQLiteStatement statement = db.compileStatement(INSERT_OR_UPDATE_BOOK_INFO);
+		statement.bindString(0, bookInfo.getEan13());
+		statement.bindString(1, bookInfo.getTitle());
+		statement.bindString(2, bookInfo.getAuthor());
+		statement.bindLong(3, bookInfo.getRating());
+		statement.bindString(4, bookInfo.getComment());
+		statement.bindString(5, ((DateFormat)SIMPLE_DATE.clone()).format(bookInfo.getFirstView()));
+		
+		statement.execute();
 	}
 
 }

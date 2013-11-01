@@ -53,6 +53,8 @@ public class GoogleBooksJSONParser {
 					}
 					
 					BookInfo book = new BookInfo(volumeInfo.getString("title"), author, ean, new Date(), 0, "");
+					
+					result.addBook(book);
 				}
 			}
 			return result;

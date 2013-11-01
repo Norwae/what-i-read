@@ -43,4 +43,9 @@ public class BookDatabase {
 		return bookDatabaseAccess.selectBookInfo(ctx, BookDatabaseHelper.TITLE_COLUMN + " LIKE ? OR " + BookDatabaseHelper.AUTHOR_COLUMN + " LIKE ?", arg2, arg2);
 		
 	}
+
+
+	public void saveOrUpdate(BookInfo bookInfo) {
+		bookDatabaseAccess.saveOrUpdate(bookInfo);
+	}
 }

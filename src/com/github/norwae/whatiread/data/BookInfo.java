@@ -11,8 +11,9 @@ public class BookInfo implements Serializable {
 	private final String author;
 	private final String ean13;
 	private final Date firstView;
-	private final int rating;
-	private final String comment;
+	
+	private int rating;
+	private String comment;
 
 	public BookInfo(String title, String author, String ean13, Date date,
 			int rating, String comment) {
@@ -47,5 +48,13 @@ public class BookInfo implements Serializable {
 	
 	public String getTitle() {
 		return title;
+	}
+	
+	public void setRating(int rating) {
+		this.rating = rating;
+	}
+	
+	public void setComment(String comment) {
+		this.comment = comment;
 	}
 }
