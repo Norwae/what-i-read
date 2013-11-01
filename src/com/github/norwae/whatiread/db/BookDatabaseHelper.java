@@ -22,7 +22,7 @@ public class BookDatabaseHelper extends SQLiteOpenHelper {
 	private static final int DATABASE_VERSION = 1;
 	private static final String DATABASE_NAME = "com.github.norwae.whatiread.db.BookDatabase";
 	private static final String BOOKSHELF_TABLE_NAME = "bookshelf";
-	private static final DateFormat SIMPLE_DATE = new SimpleDateFormat("YYYY-MM-DD");
+	private static final DateFormat SIMPLE_DATE = new SimpleDateFormat("yyyy-MM-DD");
 	
 	static final String ISBN_COLUMN = "isbn";
 	static final String AUTHOR_COLUMN = "author";
@@ -48,7 +48,7 @@ public class BookDatabaseHelper extends SQLiteOpenHelper {
 			+ COMMENT_COLUMN + " TEXT,"
 			+ SCANNED_COLUMN + " TEXT);";
 
-	private static final String INSERT_OR_UPDATE_BOOK_INFO = "INSERT OR UPDATE INTO " + BOOKSHELF_TABLE_NAME + " VALUES ("
+	private static final String INSERT_OR_UPDATE_BOOK_INFO = "INSERT OR REPLACE INTO " + BOOKSHELF_TABLE_NAME + " ("
 			+ ISBN_COLUMN + ","
 			+ TITLE_COLUMN + ","
 			+ AUTHOR_COLUMN + ","
@@ -109,12 +109,12 @@ public class BookDatabaseHelper extends SQLiteOpenHelper {
 	public void saveOrUpdate(BookInfo bookInfo) {
 		SQLiteDatabase db = getWritableDatabase();
 		SQLiteStatement statement = db.compileStatement(INSERT_OR_UPDATE_BOOK_INFO);
-		statement.bindString(0, bookInfo.getEan13());
-		statement.bindString(1, bookInfo.getTitle());
-		statement.bindString(2, bookInfo.getAuthor());
-		statement.bindLong(3, bookInfo.getRating());
-		statement.bindString(4, bookInfo.getComment());
-		statement.bindString(5, ((DateFormat)SIMPLE_DATE.clone()).format(bookInfo.getFirstView()));
+		statement.bindString(1, bookInfo.getEan13());
+		statement.bindString(2, bookInfo.getTitle());
+		statement.bindString(3, bookInfo.getAuthor());
+		statement.bindLong(4, bookInfo.getRating());
+		statement.bindString(5, bookInfo.getComment());
+		statement.bindString(6, ((DateFormat)SIMPLE_DATE.clone()).format(bookInfo.getFirstView()));
 		
 		statement.execute();
 	}
