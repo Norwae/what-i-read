@@ -23,6 +23,7 @@ public class BookInfo implements Serializable {
 		this.rating = rating;
 		this.comment = comment;
 	}
+	
 
 	public String getAuthor() {
 		return author;

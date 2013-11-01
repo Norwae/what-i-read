@@ -12,7 +12,7 @@ import com.github.norwae.whatiread.data.ISBN13;
 
 public class GoogleBooksISBNRequest {
 	
-	private static final String QUERY_TEMPLATE = "https://www.googleapis.com/books/v1/volumes?q=isbn:$ISBN&key=$KEY&country=$COUNTRY";
+	private static final String QUERY_TEMPLATE = "https://www.googleapis.com/books/v1/volumes?q=isbn:$ISBN&key=$KEY&country=$COUNTRY&projection=lite";
 
 	private final String key;
 	private final String code;
@@ -36,7 +36,7 @@ public class GoogleBooksISBNRequest {
 				Log.i("google-books-api", "API rejected call with code " + connection.getResponseCode() + " <" + connection.getResponseMessage() + ">");
 			}
 			
-			GoogleBooksJSONParser parser = new GoogleBooksJSONParser(connection.getInputStream());
+			GoogleBooksJSONParser parser = new GoogleBooksJSONParser(connection.getInputStream(), code);
 			
 			GoogleBooksAPIResult result = parser.parse();
 			
