@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Schon gelesen?</string>
+    <string name="action_settings">Einstellungen</string>
+    <string name="action_scan">Scan</string>
+    <string name="action_search">Suchen</string>
+    <string name="action_save">Speichern</string>
+    <string name="action_ok">OK</string>
+    <string name="action_edit">Bearbeiten</string>
+    <string name="action_cancel">Abbrechen</string>
+    
+    <string name="input_title">Titel?</string>
+
+    
+    <string name="title">Titel</string>
+    <string name="author">Autor</string>
+    <string name="isbn">ISBN-13</string>
+    <string name="comment">Kommentar</string>
+    <string name="rating">Bewertung</string>
+    <string name="firstRead">Erstes mal gelesen</string>
+   
+    <string name="coverImage">Cover</string>
+    
+    <string name="alert.alreadyKnown">Du hast dieses Buch schon gelesen</string>
+    
+    <string name="query.localDB">Lokale Datenbank abrufen&#8230;</string>
+    <string name="query.googleBooks">Google Books abrufen&#8230;</string>
+    
+    <string name="progress.pleaseWait">Bitte warten</string>
+    <string name="progress.initial">Bereite Hintergrundaufgabe vor&#8230;</string>
+    <string name="progress.openDB">Öffne interne Datenbank&#8230;</string>
+	<string name="progress.saveBook">Speichern&#8230;</string>    
+</resources>
