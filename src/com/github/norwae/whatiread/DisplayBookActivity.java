@@ -5,7 +5,10 @@ import com.github.norwae.whatiread.data.BookInfo;
 import com.github.norwae.whatiread.db.BookDatabase;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.format.DateFormat;
@@ -37,6 +40,26 @@ public class DisplayBookActivity extends Activity {
 				saveAndReturn();
 			}
 		});
+		
+		if (!info.isAddition()) {
+			AlertDialog alert = new AlertDialog.Builder(this).setMessage(getString(R.string.alert_alreadyKnown))
+					.setNegativeButton(R.string.action_ok, new DialogInterface.OnClickListener() {
+						
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							finish();
+						}
+					})
+					.setPositiveButton(R.string.action_edit, new DialogInterface.OnClickListener() {
+						
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							// remain in the mask
+						}
+					})
+					.create();
+			alert.show();
+		}
 	}
 
 	protected void saveAndReturn() {

@@ -98,7 +98,7 @@ public class BookDatabaseHelper extends SQLiteOpenHelper {
 			}
 			int rating = cursor.getInt(ratingIdx);
 			
-			BookInfo info = new BookInfo(title, author, isbn, scanned, rating, comment);
+			BookInfo info = new BookInfo(title, author, isbn, scanned, rating, comment, false);
 			
 			rv.add(info);
 		}
