@@ -152,6 +152,8 @@ public class MainActivity extends Activity {
 					ListView list = (ListView) findViewById(R.id.bookList);
 					ListAdapter adapter = new BookInfoListAdapter(anObject);
 					list.setAdapter(adapter);
+					
+					progressDialog.dismiss();
 				}
 			}, this);
 			
