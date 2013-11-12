@@ -29,6 +29,7 @@ public class GoogleBooksISBNRequest {
 		URL serviceURL;
 		try {
 			serviceURL = composeServiceURL();
+			
 
 			Log.i("google-books-api", "preparing to call: " + serviceURL);			
 			HttpURLConnection connection = (HttpURLConnection) serviceURL.openConnection();

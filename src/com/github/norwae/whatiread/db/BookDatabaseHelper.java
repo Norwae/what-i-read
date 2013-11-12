@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -22,6 +23,7 @@ public class BookDatabaseHelper extends SQLiteOpenHelper {
 	private static final int DATABASE_VERSION = 1;
 	private static final String DATABASE_NAME = "com.github.norwae.whatiread.db.BookDatabase";
 	private static final String BOOKSHELF_TABLE_NAME = "bookshelf";
+	@SuppressLint("SimpleDateFormat") // Fixed date format for DB storage
 	private static final DateFormat SIMPLE_DATE = new SimpleDateFormat("yyyy-MM-DD");
 	
 	static final String ISBN_COLUMN = "isbn";
@@ -55,6 +57,7 @@ public class BookDatabaseHelper extends SQLiteOpenHelper {
 			+ RATING_COLUMN + ","
 			+ COMMENT_COLUMN + ","
 			+ SCANNED_COLUMN + ") VALUES (?, ?, ?, ?, ?, ?)";
+	private static final String DELETE_BOOK_INFO = "DELETE FROM " + BOOKSHELF_TABLE_NAME + " WHERE " + ISBN_COLUMN + " == ?";
 
 	public BookDatabaseHelper(Context context) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -117,6 +120,15 @@ public class BookDatabaseHelper extends SQLiteOpenHelper {
 		statement.bindString(6, ((DateFormat)SIMPLE_DATE.clone()).format(bookInfo.getFirstView()));
 		
 		statement.execute();
+	}
+
+	public void delete(BookInfo bookInfo) {
+		SQLiteDatabase db = getWritableDatabase();
+		SQLiteStatement statement = db.compileStatement(DELETE_BOOK_INFO);
+		statement.bindString(1, bookInfo.getEan13());
+		
+		statement.execute();
+		
 	}
 
 }

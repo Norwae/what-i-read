@@ -1,23 +1,19 @@
 package com.github.norwae.whatiread;
 
 
-import com.github.norwae.whatiread.data.BookInfo;
-import com.github.norwae.whatiread.db.BookDatabase;
-
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.AlertDialog.Builder;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.text.format.DateFormat;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
-import android.widget.RatingBar;
 import android.widget.TextView;
+
+import com.github.norwae.whatiread.data.BookInfo;
 
 public class DisplayBookActivity extends Activity {
 	
@@ -41,6 +37,16 @@ public class DisplayBookActivity extends Activity {
 			}
 		});
 		
+		Button delete = (Button) findViewById(R.id.delete);
+				
+		delete.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				deleteAndReturn();
+			}
+		});
+		
 		if (!info.isAddition()) {
 			AlertDialog alert = new AlertDialog.Builder(this).setMessage(getString(R.string.alert_alreadyKnown))
 					.setNegativeButton(R.string.action_ok, new DialogInterface.OnClickListener() {
@@ -60,6 +66,29 @@ public class DisplayBookActivity extends Activity {
 					.create();
 			alert.show();
 		}
+	}
+	
+	protected void deleteAndReturn() {
+
+		final ProgressDialog progressDialog = ProgressDialog.show(this, getString(R.string.progress_pleaseWait), getString(R.string.progress_initial));
+		
+		BookDelete delete = new BookDelete(this, new AsyncCallbackReceiver<Void, String>() {
+			@Override
+			public void onProgressReport(String... someProgress) {
+				progressDialog.setMessage(someProgress[0]);
+			}		
+			
+			@Override
+			public void onAsyncComplete(Void anObject) {
+				if (progressDialog.isShowing()) {
+					progressDialog.dismiss();
+				}
+				
+				finish();
+			}
+		});
+		
+		delete.execute(info);
 	}
 
 	protected void saveAndReturn() {

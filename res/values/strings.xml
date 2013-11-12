@@ -4,6 +4,7 @@
     <string name="app_name">What I Read</string>
     <string name="action_settings">Settings</string>
     <string name="action_scan">Scan</string>
+    <string name="action_delete">Delete</string>
     <string name="action_search">Search</string>
     <string name="action_save">Save</string>
     <string name="action_ok">OK</string>
@@ -30,5 +31,6 @@
     <string name="progress.pleaseWait">Please wait</string>
     <string name="progress.initial">Performing background work</string>
     <string name="progress.openDB">Connecting to book database</string>
-	<string name="progress.saveBook">Saving book information</string>    
+	<string name="progress.saveBook">Saving book information</string>
+	<string name="progress.deleteBook">Deleting book information</string>        
 </resources>

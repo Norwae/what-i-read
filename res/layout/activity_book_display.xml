@@ -85,4 +85,14 @@
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/comment"
         android:text="@string/action_save" />
+
+    <Button
+        android:id="@+id/delete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/save"
+        android:layout_alignBottom="@+id/save"
+        android:layout_toRightOf="@+id/save"
+        android:text="@string/action_delete" />
+
 </RelativeLayout>

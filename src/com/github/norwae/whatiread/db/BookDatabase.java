@@ -48,4 +48,9 @@ public class BookDatabase {
 	public void saveOrUpdate(BookInfo bookInfo) {
 		bookDatabaseAccess.saveOrUpdate(bookInfo);
 	}
+
+
+	public void delete(BookInfo bookInfo) {
+		bookDatabaseAccess.delete(bookInfo);		
+	}
 }
