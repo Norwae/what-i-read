@@ -15,7 +15,7 @@
 		    <TextView
 	    	    android:id="@+id/titleLabel"
 		        android:text="@string/title" />
-		    <TextView android:id="@+id/title"/>
+		    <EditText android:id="@+id/title" android:inputType="text"/>
     
         </TableRow>
 
@@ -28,7 +28,7 @@
                 android:id="@+id/authorLabel"
                 android:text="@string/author" />
    			
-   			<TextView android:id="@+id/author"/>
+   			<EditText android:id="@+id/author" android:inputType="text"/>
         </TableRow>
 
         <TableRow

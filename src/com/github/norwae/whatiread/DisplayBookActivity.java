@@ -92,8 +92,13 @@ public class DisplayBookActivity extends Activity {
 	}
 
 	protected void saveAndReturn() {
-		TextView comment = (TextView) findViewById(R.id.comment);
-		info.setComment(comment.getText().toString());
+		TextView input = (TextView) findViewById(R.id.comment);
+		info.setComment(stringFromView(input));
+		input = (TextView) findViewById(R.id.author);
+		info.setAuthor(stringFromView(input));
+		input = (TextView) findViewById(R.id.title);
+		info.setTitle(stringFromView(input));
+		
 
 		
 		final ProgressDialog progressDialog = ProgressDialog.show(this, getString(R.string.progress_pleaseWait), getString(R.string.progress_initial));
@@ -116,6 +121,11 @@ public class DisplayBookActivity extends Activity {
 		});
 		
 		persist.execute(info);
+	}
+
+	private String stringFromView(TextView input) {
+		CharSequence text = input.getText();
+		return text != null ? text.toString() : null;
 	}
 
 	private void initViewFields() {
