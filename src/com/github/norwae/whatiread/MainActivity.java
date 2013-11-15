@@ -2,7 +2,6 @@ package com.github.norwae.whatiread;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
@@ -10,8 +9,6 @@ import com.github.norwae.whatiread.data.BookInfo;
 import com.github.norwae.whatiread.data.BookInfoListAdapter;
 import com.github.norwae.whatiread.data.ISBN13;
 import com.github.norwae.whatiread.db.BookDBQuery;
-import com.github.norwae.whatiread.db.BookDatabase;
-import com.github.norwae.whatiread.db.BookDatabaseHelper;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
@@ -23,8 +20,6 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.view.Menu;
 import android.view.View;
-import android.view.textservice.TextInfo;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListAdapter;

@@ -6,7 +6,6 @@ import android.content.Context;
 
 import com.github.norwae.whatiread.AsyncCallbackReceiver;
 import com.github.norwae.whatiread.CallbackAsync;
-import com.github.norwae.whatiread.MainActivity;
 import com.github.norwae.whatiread.R;
 import com.github.norwae.whatiread.data.BookInfo;
 

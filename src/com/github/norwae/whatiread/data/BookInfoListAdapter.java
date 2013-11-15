@@ -3,11 +3,9 @@ package com.github.norwae.whatiread.data;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.database.DataSetObserver;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ListAdapter;
 import android.widget.TextView;
 
 public class BookInfoListAdapter extends BaseAdapter{

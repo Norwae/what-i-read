@@ -7,14 +7,13 @@ public class BookInfo implements Serializable {
 
 	private static final long serialVersionUID = 2317828706327659235L;
 
-	private final String title;
-	private final String author;
-	private final String ean13;
-	private final Date firstView;
 
 	private final boolean addition;
-
+	private final Date firstView;
+	private final String ean13;	
 	
+	private String title;
+	private String author;
 	private int rating;
 	private String comment;
 
@@ -27,6 +26,14 @@ public class BookInfo implements Serializable {
 		this.addition = addition;
 		this.rating = rating;
 		this.comment = comment;
+	}
+	
+	public void setAuthor(String author) {
+		this.author = author;
+	}
+	
+	public void setTitle(String title) {
+		this.title = title;
 	}
 
 	public boolean isAddition() {
