@@ -33,16 +33,16 @@ public class GoogleBooksISBNRequest {
 
 			Log.i("google-books-api", "preparing to call: " + serviceURL);			
 			HttpURLConnection connection = (HttpURLConnection) serviceURL.openConnection();
-			if (HttpURLConnection.HTTP_OK != connection.getResponseCode()) {
+			if (HttpURLConnection.HTTP_OK == connection.getResponseCode()) {
+				GoogleBooksJSONParser parser = new GoogleBooksJSONParser(connection.getInputStream(), code);
+				
+				GoogleBooksAPIResult result = parser.parse();
+				
+				if (!result.getBookInfos().isEmpty()) {
+					return result.getBookInfos().get(0);
+				}	
+			} else {
 				Log.i("google-books-api", "API rejected call with code " + connection.getResponseCode() + " <" + connection.getResponseMessage() + ">");
-			}
-			
-			GoogleBooksJSONParser parser = new GoogleBooksJSONParser(connection.getInputStream(), code);
-			
-			GoogleBooksAPIResult result = parser.parse();
-			
-			if (!result.getBookInfos().isEmpty()) {
-				return result.getBookInfos().get(0);
 			}
 		} catch (Exception e) {
 			Log.e("google-books-api", "failed to call", e);
