@@ -17,6 +17,8 @@ import android.os.Bundle;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.view.Menu;
 import android.view.View;
@@ -30,11 +32,13 @@ public class MainActivity extends Activity {
 	private static final String EAN_13_TYPE = "EAN_13";
 	
 	private Collection<AsyncTask<?, ?, ?>> backgroundTasks = new HashSet<AsyncTask<?, ?, ?>>();
+	
+	private boolean dialogShown;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-				
+		
 		setContentView(R.layout.activity_main);
 		
 		Button b = (Button) findViewById(R.id.scan);

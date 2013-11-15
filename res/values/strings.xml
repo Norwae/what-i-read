@@ -12,6 +12,8 @@
     <string name="action_cancel">Cancel</string>
     
     <string name="input_title">Title?</string>
+    
+    <string name="alpha">Welcome to the alpha-version of "what i read". Please note that this is a project still under active development. Bugs are not only possible, they are expected. Nevertheless, hopefully you will enjoy this application.</string>
 
     
     <string name="title">Title</string>
@@ -27,6 +29,7 @@
     
     <string name="query.localDB">Querying local database</string>
     <string name="query.googleBooks">Querying Google Books database</string>
+    <string name="query.fallback">Creating fallback book information</string>
     
     <string name="progress.pleaseWait">Please wait</string>
     <string name="progress.initial">Performing background work</string>

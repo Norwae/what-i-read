@@ -4,6 +4,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -75,6 +76,7 @@ public class BookDatabaseHelper extends SQLiteOpenHelper {
 	}
 
 	public List<BookInfo> selectBookInfo(Context ctx, String aQuery, String ...someQueryArgs) {
+		Log.d("db-query", "Querying the database for " + aQuery + " with args " + Arrays.asList(someQueryArgs));
 		SQLiteDatabase database = getReadableDatabase();
 		Cursor cursor = database.query(BOOKSHELF_TABLE_NAME, BOOKSHELF_FIELD_NAMES, aQuery, someQueryArgs, null, null, null);
 
@@ -105,6 +107,8 @@ public class BookDatabaseHelper extends SQLiteOpenHelper {
 			
 			rv.add(info);
 		}
+		
+		Log.d("db-query", "Found " + rv.size() + " elements matching");
 		
 		return rv;
 	}

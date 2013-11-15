@@ -12,8 +12,7 @@ import com.github.norwae.whatiread.data.ISBN13;
 
 public class GoogleBooksISBNRequest {
 	
-	private static final String QUERY_TEMPLATE = "https://www.googleapis.com/books/v1/volumes?q=isbn:$ISBN&key=$KEY&country=$COUNTRY&projection=lite";
-
+	private static final String QUERY_TEMPLATE = "https://www.googleapis.com/books/v1/volumes?q=isbn:$ISBN&country=$COUNTRY&projection=lite";
 	private final String key;
 	private final String code;
 	private final Locale locale;
@@ -29,16 +28,15 @@ public class GoogleBooksISBNRequest {
 		URL serviceURL;
 		try {
 			serviceURL = composeServiceURL();
-			
-
 			Log.i("google-books-api", "preparing to call: " + serviceURL);			
 			HttpURLConnection connection = (HttpURLConnection) serviceURL.openConnection();
+			connection.addRequestProperty("key", Key.KEY);
 			if (HttpURLConnection.HTTP_OK == connection.getResponseCode()) {
 				GoogleBooksJSONParser parser = new GoogleBooksJSONParser(connection.getInputStream(), code);
 				
 				GoogleBooksAPIResult result = parser.parse();
 				
-				if (!result.getBookInfos().isEmpty()) {
+				if (result != null && !result.getBookInfos().isEmpty()) {
 					return result.getBookInfos().get(0);
 				}	
 			} else {

@@ -3,6 +3,7 @@ package com.github.norwae.whatiread.db;
 import java.util.List;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.github.norwae.whatiread.data.BookInfo;
 import com.github.norwae.whatiread.data.ISBN13;
@@ -39,7 +40,6 @@ public class BookDatabase {
 
 	public List<BookInfo> getForString(String arg) {
 		String arg2 = "%" + arg + "%";
-		
 		return bookDatabaseAccess.selectBookInfo(ctx, BookDatabaseHelper.TITLE_COLUMN + " LIKE ? OR " + BookDatabaseHelper.AUTHOR_COLUMN + " LIKE ?", arg2, arg2);
 		
 	}

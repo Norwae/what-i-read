@@ -9,13 +9,15 @@ import com.github.norwae.whatiread.data.BookInfo;
 import com.github.norwae.whatiread.data.ISBN13;
 import com.github.norwae.whatiread.data.ISBNLookupProvider;
 import com.github.norwae.whatiread.db.DBBookLookupProvider;
+import com.github.norwae.whatiread.fallback.FallbackLookupProvider;
 import com.github.norwae.whatiread.googlebooks.GoogleBooksLookupProvider;
 
 public class BookISBNLookup extends CallbackAsync<ISBN13, String, BookInfo>{
 	
 	private List<ISBNLookupProvider> allProviders = Arrays.asList(
 			new DBBookLookupProvider(),
-			new GoogleBooksLookupProvider()
+			new GoogleBooksLookupProvider(),
+			new FallbackLookupProvider()
 	);
 	private Context context;
 
