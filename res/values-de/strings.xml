@@ -10,6 +10,7 @@
     <string name="action_ok">OK</string>
     <string name="action_edit">Bearbeiten</string>
     <string name="action_cancel">Abbrechen</string>
+    <string name="action_about">Über "Schon gelesen?"</string>
     
     <string name="input_title">Titel?</string>
 	<string name="alpha">Herzlich willkommen zur Alpha-Version von "Schon gelesen?". Bitte beachten Sie das dies ein Projekt ist, dessen Entwicklung noch lange nicht abgeschlossen ist. Es kann (und wird wahrscheinlich) Fehler geben. Bitte haben Sie dafür Verständnis</string>

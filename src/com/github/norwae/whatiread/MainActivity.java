@@ -5,6 +5,23 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.ProgressDialog;
+import android.content.Intent;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.MenuItem.OnMenuItemClickListener;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ListAdapter;
+import android.widget.ListView;
+
 import com.github.norwae.whatiread.data.BookInfo;
 import com.github.norwae.whatiread.data.BookInfoListAdapter;
 import com.github.norwae.whatiread.data.ISBN13;
@@ -12,28 +29,12 @@ import com.github.norwae.whatiread.db.BookDBQuery;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
-import android.os.AsyncTask;
-import android.os.Bundle;
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.ProgressDialog;
-import android.content.DialogInterface;
-import android.content.DialogInterface.OnClickListener;
-import android.content.Intent;
-import android.view.Menu;
-import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ListAdapter;
-import android.widget.ListView;
-
 public class MainActivity extends Activity {
 
 	private static final String EAN_13_TYPE = "EAN_13";
 	
 	private Collection<AsyncTask<?, ?, ?>> backgroundTasks = new HashSet<AsyncTask<?, ?, ?>>();
 	
-	private boolean dialogShown;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -75,6 +76,20 @@ public class MainActivity extends Activity {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(R.menu.main, menu);
+		
+		menu.add(R.string.action_about).setOnMenuItemClickListener(new OnMenuItemClickListener() {
+			
+			@Override
+			public boolean onMenuItemClick(MenuItem item) {
+				new AlertDialog.Builder(MainActivity.this)
+					.setMessage(R.string.alpha)
+					.setNeutralButton(R.string.action_ok, null)
+					.show();
+				
+				return true;
+			}
+		});
+		
 		return true;
 	}
 	
@@ -149,8 +164,10 @@ public class MainActivity extends Activity {
 				@Override
 				public void onAsyncComplete(List<BookInfo> anObject) {
 					ListView list = (ListView) findViewById(R.id.bookList);
+					Log.d("search-result", "Updating list view with " + anObject.size() + " Books");
 					ListAdapter adapter = new BookInfoListAdapter(anObject);
 					list.setAdapter(adapter);
+					
 					
 					progressDialog.dismiss();
 				}
