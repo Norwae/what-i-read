@@ -1,8 +1,6 @@
 package com.github.norwae.whatiread.googlebooks;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 import com.github.norwae.whatiread.data.BookInfo;

@@ -37,27 +37,32 @@ public class GoogleBooksJSONParser {
 		}
 		
 		try {
-			GoogleBooksAPIResult result = new GoogleBooksAPIResult();
 			JSONObject json = new JSONObject(buffer.toString());
-			JSONArray items = json.getJSONArray("items");
+			int total = json.getInt("totalItems");
 			
-			if (items != null) {
-				for (int i = 0; i < items.length(); i++) {
-					JSONObject volumeInfo = items.getJSONObject(i).getJSONObject("volumeInfo");
-					
-					String author = null;
-					JSONArray authors = volumeInfo.getJSONArray("authors");
-					
-					if (authors != null && authors.length() > 0) {
-						author = authors.getString(0);
+			if (total >= 1) {
+				GoogleBooksAPIResult result = new GoogleBooksAPIResult();
+				
+				JSONArray items = json.getJSONArray("items");
+				
+				if (items != null) {
+					for (int i = 0; i < items.length(); i++) {
+						JSONObject volumeInfo = items.getJSONObject(i).getJSONObject("volumeInfo");
+						
+						String author = null;
+						JSONArray authors = volumeInfo.getJSONArray("authors");
+						
+						if (authors != null && authors.length() > 0) {
+							author = authors.getString(0);
+						}
+						
+						BookInfo book = new BookInfo(volumeInfo.getString("title"), author, ean, new Date(), 0, "", true);
+						
+						result.addBook(book);
 					}
-					
-					BookInfo book = new BookInfo(volumeInfo.getString("title"), author, ean, new Date(), 0, "", true);
-					
-					result.addBook(book);
 				}
+				return result;
 			}
-			return result;
 		} catch (JSONException e) {
 			Log.e("parse-api-result", "error parsing json '" + buffer + "'", e);
 		}
