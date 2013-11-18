@@ -14,7 +14,7 @@
     
     <string name="input_title">Title?</string>
     
-    <string name="alpha">Welcome to the alpha-version of "what i read". Please note that this is a project still under active development. Bugs are not only possible, they are expected. Nevertheless, hopefully you will enjoy this application.</string>
+    <string name="alpha">Welcome to the alpha-version of "what i read". Please note that this is a project still under active development. Bugs are not only possible, they are expected. Nevertheless, hopefully you will enjoy this application.\n\nThis application is free software. You can retrieve the source code and licence at https://github.com/Norwae/what-i-read.\n\nThe ISBN metadata lookup is powered by Google Books.</string>
 
     
     <string name="title">Title</string>

@@ -13,7 +13,7 @@
     <string name="action_about">Über "Schon gelesen?"</string>
     
     <string name="input_title">Titel?</string>
-	<string name="alpha">Herzlich willkommen zur Alpha-Version von "Schon gelesen?". Bitte beachten Sie das dies ein Projekt ist, dessen Entwicklung noch lange nicht abgeschlossen ist. Es kann (und wird wahrscheinlich) Fehler geben. Bitte haben Sie dafür Verständnis</string>
+	<string name="alpha">Herzlich willkommen zur Alpha-Version von "Schon gelesen?". Bitte beachten Sie das dies ein Projekt ist, dessen Entwicklung noch lange nicht abgeschlossen ist. Es kann (und wird wahrscheinlich) Fehler geben. Bitte haben Sie dafür Verständnis\n\nDiese App ist freie Software. Lizenz und Quelltext unter https://github.com/Norwae/what-i-read.\n\nPowered by Google Books.</string>
     
     <string name="title">Titel</string>
     <string name="author">Autor</string>

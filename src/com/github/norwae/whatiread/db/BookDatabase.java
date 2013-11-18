@@ -3,7 +3,6 @@ package com.github.norwae.whatiread.db;
 import java.util.List;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.github.norwae.whatiread.data.BookInfo;
 import com.github.norwae.whatiread.data.ISBN13;
