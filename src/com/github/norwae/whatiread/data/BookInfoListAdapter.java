@@ -22,21 +22,30 @@ public class BookInfoListAdapter extends BaseAdapter{
 	}
 
 	@Override
-	public Object getItem(int idx) {
+	public String getItem(int idx) {
 		return data.get(idx).getTitle();
 	}
 
 	@Override
 	public long getItemId(int idx) {
-		return idx;
+		return Long.parseLong(data.get(idx).getEan13());
+	}
+	
+	public BookInfo getInfoAt(int idx) {
+		return data.get(idx);
 	}
 
 	@Override
 	public View getView(int idx, View old, ViewGroup parent) {
+		TextView view;
 		if (old instanceof TextView) {
-			return old;
+			view = (TextView) old;
+		} else {		
+			view = new TextView(parent.getContext());
 		}
 		
-		return new TextView(parent.getContext());
+		view.setText(getItem(idx));
+		
+		return view;
 	}
 }

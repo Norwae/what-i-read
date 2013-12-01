@@ -16,6 +16,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MenuItem.OnMenuItemClickListener;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListAdapter;
@@ -59,6 +60,17 @@ public class MainActivity extends Activity {
 				String text = searchBar.getText().toString();
 				
 				searchForText(text);
+			}
+		});
+		
+		ListView list = (ListView) findViewById(R.id.bookList);
+		list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> adapter, View itemView, int itemCount,
+					long rowID) {
+				BookInfo info = ((BookInfoListAdapter) adapter.getAdapter()).getInfoAt(itemCount);
+				displayBookInfo(info);
 			}
 		});
 	}
@@ -116,6 +128,14 @@ public class MainActivity extends Activity {
 			super.onActivityResult(requestCode, resultCode, data);
 		}
 	}
+	
+
+
+	void displayBookInfo(BookInfo anObject) {
+		Intent tempIntent = new Intent(MainActivity.this, DisplayBookActivity.class);
+		tempIntent.putExtra(DisplayBookActivity.BOOK_INFO_VARIABLE, anObject);
+		startActivity(tempIntent);
+	}
 
 	private void lookupISBN(ISBN13 isbn) {
 		final ProgressDialog progressDialog = ProgressDialog.show(this, getString(R.string.progress_pleaseWait), getString(R.string.progress_initial));
@@ -130,9 +150,7 @@ public class MainActivity extends Activity {
 				}
 				
 				if (anObject != null) {
-					Intent tempIntent = new Intent(MainActivity.this, DisplayBookActivity.class);
-					tempIntent.putExtra(DisplayBookActivity.BOOK_INFO_VARIABLE, anObject);
-					startActivity(tempIntent);
+					displayBookInfo(anObject);
 				}
 			}
 
@@ -166,6 +184,7 @@ public class MainActivity extends Activity {
 					Log.d("search-result", "Updating list view with " + anObject.size() + " Books");
 					ListAdapter adapter = new BookInfoListAdapter(anObject);
 					list.setAdapter(adapter);
+					list.invalidate();
 					
 					
 					progressDialog.dismiss();
