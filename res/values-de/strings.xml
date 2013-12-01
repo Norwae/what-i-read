@@ -34,5 +34,8 @@
     <string name="progress.initial">Bereite Hintergrundaufgabe vor&#8230;</string>
     <string name="progress.openDB">Öffne interne Datenbank&#8230;</string>
 	<string name="progress.saveBook">Speichern&#8230;</string>    
-	<string name="progress.deleteBook">Löschen&#8230;</string>        
+	<string name="progress.deleteBook">Löschen&#8230;</string>
+	
+	<string name="barcode_scanner.download.title">Barcode Scanner installieren?</string>
+	<string name="barcode_scanner.download.message">Für die Scanfunktion wird ein Barcode-scanner benötigt. Soll dieser nun installiert werden?</string>
 </resources>
