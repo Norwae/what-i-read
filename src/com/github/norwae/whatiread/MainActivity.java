@@ -70,7 +70,7 @@ public class MainActivity extends Activity {
 			public void onItemClick(AdapterView<?> adapter, View itemView, int itemCount,
 					long rowID) {
 				BookInfo info = ((BookInfoListAdapter) adapter.getAdapter()).getInfoAt(itemCount);
-				displayBookInfo(info);
+				displayBookInfo(info, false);
 			}
 		});
 	}
@@ -131,9 +131,10 @@ public class MainActivity extends Activity {
 	
 
 
-	void displayBookInfo(BookInfo anObject) {
+	void displayBookInfo(BookInfo anObject, boolean warnForExisting) {
 		Intent tempIntent = new Intent(MainActivity.this, DisplayBookActivity.class);
 		tempIntent.putExtra(DisplayBookActivity.BOOK_INFO_VARIABLE, anObject);
+		tempIntent.putExtra(DisplayBookActivity.WARN_FOR_READ_BOOKS_VARIABLE, warnForExisting);
 		startActivity(tempIntent);
 	}
 
@@ -150,7 +151,7 @@ public class MainActivity extends Activity {
 				}
 				
 				if (anObject != null) {
-					displayBookInfo(anObject);
+					displayBookInfo(anObject, true);
 				}
 			}
 

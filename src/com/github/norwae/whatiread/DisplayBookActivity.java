@@ -18,6 +18,8 @@ import com.github.norwae.whatiread.data.BookInfo;
 public class DisplayBookActivity extends Activity {
 	
 	public static final String BOOK_INFO_VARIABLE = "EXTRA_BOOK_INFO";
+	public static final String WARN_FOR_READ_BOOKS_VARIABLE = "EXTRA_DISPLAY_READ_WARNING";
+	
 	private BookInfo info;
 
 	@Override
@@ -47,7 +49,7 @@ public class DisplayBookActivity extends Activity {
 			}
 		});
 		
-		if (!info.isAddition()) {
+		if (getIntent().getExtras().getBoolean(WARN_FOR_READ_BOOKS_VARIABLE) && !info.isAddition()) {
 			AlertDialog alert = new AlertDialog.Builder(this).setMessage(getString(R.string.alert_alreadyKnown))
 					.setNegativeButton(R.string.action_ok, new DialogInterface.OnClickListener() {
 						
