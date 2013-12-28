@@ -12,6 +12,9 @@
     <string name="action_cancel">Abbrechen</string>
     <string name="action_about">Über "Schon gelesen?"</string>
     
+    <string name="fragment_title_register">Erfassen</string>
+    <string name="fragment_title_browse">Stöbern</string>
+    
     <string name="input_title">Suche</string>
 	<string name="alpha">Herzlich willkommen zur Alpha-Version von "Schon gelesen?". Bitte beachten Sie das dies ein Projekt ist, dessen Entwicklung noch lange nicht abgeschlossen ist. Es kann (und wird wahrscheinlich) Fehler geben. Bitte haben Sie dafür Verständnis\n\nDiese App ist freie Software. Lizenz und Quelltext unter https://github.com/Norwae/what-i-read.\n\nPowered by Google Books.</string>
     
