@@ -7,6 +7,7 @@
     <string name="action_search">Suchen</string>
     <string name="action_delete">Löschen</string>
     <string name="action_save">Speichern</string>
+    <string name="action_add">Hinzufügen</string>
     <string name="action_ok">OK</string>
     <string name="action_edit">Bearbeiten</string>
     <string name="action_cancel">Abbrechen</string>

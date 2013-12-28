@@ -13,6 +13,8 @@
     <string name="action_cancel">Cancel</string>
     <string name="action_about">About</string>
     
+    <string name="invalid_isbn">Invalid ISBN</string>
+    
     <string name="fragment_title_register">Register</string>
     <string name="fragment_title_browse">Browse Books</string>
     
