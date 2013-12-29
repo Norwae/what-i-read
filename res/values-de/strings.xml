@@ -13,6 +13,8 @@
     <string name="action_cancel">Abbrechen</string>
     <string name="action_about">Über "Schon gelesen?"</string>
     
+    <string name="invalid_isbn">ISBN ungültig</string>
+    
     <string name="fragment_title_register">Erfassen</string>
     <string name="fragment_title_browse">Stöbern</string>
     

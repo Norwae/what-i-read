@@ -76,7 +76,7 @@ public class MainActivity extends FragmentActivity {
 			
 			@Override
 			public void onTabSelected(Tab tab, FragmentTransaction ft) {
-				actionBar.setSelectedNavigationItem(tab.getPosition());
+				viewPager.setCurrentItem(tab.getPosition());
 			}
 			
 			@Override
