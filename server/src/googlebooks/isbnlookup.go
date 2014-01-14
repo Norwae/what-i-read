@@ -2,32 +2,33 @@ package googlebooks
 
 import (
 	"appengine"
-	"net/http"
+	"appengine/urlfetch"
 	"encoding/json"
 	"fmt"
 	"isbn13"
-	"appengine/urlfetch"
+	"net/http"
 )
 
 type VolumeInfo struct {
 	Title    string   `json:"title"`
-	Subtitle string   `json:"subtitle"`
+	Subtitle string   `json:"subtitle,omitempty"`
 	Authors  []string `json:"authors"`
 }
 
 type BookMetaData struct {
 	Volume      VolumeInfo        `json:"volumeInfo"`
-	Publisher   string            `json:"publisher"`
-	Description string            `json:"publisher"`
+	Publisher   string            `json:"publisher,omitempty"`
+	Description string            `json:"publisher,omitempty"`
 	Images      map[string]string `json:"imageLink"`
-	PageCount   int               `json:"pageCount"`
+	PageCount   int               `json:"pageCount,omitempty"`
 }
 
 type LookupReply struct {
+	Count     int            `json:"totalItems"`
 	BookInfos []BookMetaData `json:"items"`
 }
 
-const lookupURLTemplate = "https://www.googleapis.com/books/v1/volumes?q=isbn:%d&country=%s&projection=lite&key=%s"
+const lookupURLTemplate = "https://www.googleapis.com/books/v1/volumes?q=isbn:%d&country=%s&key=%s"
 
 func LookupISBN(ctx appengine.Context, country string, isbn isbn13.ISBN13) (resp *LookupReply, err error) {
 	var r *http.Response

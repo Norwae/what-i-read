@@ -1,7 +1,8 @@
 package googlebooks
 
 import (
-//	ae "appengine"
+	ae "appengine"
+	"encoding/json"
 	"fmt"
 	"isbn13"
 	"net/http"
@@ -12,14 +13,20 @@ func init() {
 }
 
 func hw(w http.ResponseWriter, rq *http.Request) {
-	// ctx := ae.NewContext(rq)
+	isbn, err := isbn13.New(rq.URL.Path[8:])
 
-	if isbn, err := isbn13.New(rq.URL.Path[8:]); err == nil {
-		fmt.Fprintf(w, "Yup, %s!\n", isbn)
-		return
+	if err == nil {
+		var reply *LookupReply
+		ctx := ae.NewContext(rq)
+		if reply, err = LookupISBN(ctx, "de", isbn); err == nil {
+			encode := json.NewEncoder(w)
+
+			if err = encode.Encode(reply); err == nil {
+				return
+			}
+		}
 	}
 
 	w.WriteHeader(500)
-	fmt.Fprintf(w, "Ooops, %s!\n", rq.URL.Path)
-
+	fmt.Fprintf(w, "Ooops, %s (%v)!\n", rq.URL.Path, err)
 }
