@@ -34,8 +34,6 @@ func Validate(value uint64) bool {
 		mult := 2 + even
 
 		sum += int(part) * mult
-		log.Printf("Position %d: %d * %d = %d (sum = %d)\n", i, part, mult, int(part)*mult, sum)
-
 		even = ^even + 1
 		divisor /= 10
 	}
