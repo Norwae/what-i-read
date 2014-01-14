@@ -2,7 +2,6 @@ package isbn13
 
 import (
 	"errors"
-	"log"
 	"strconv"
 )
 
@@ -43,4 +42,8 @@ func Validate(value uint64) bool {
 
 func CheckDigit(isbn ISBN13) uint8 {
 	return uint8(isbn % 10)
+}
+
+func (isbn ISBN13) String() string {
+	return strconv.FormatUint(uint64(isbn), 10) 
 }
