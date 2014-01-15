@@ -21,7 +21,16 @@ func LookupISBN(ctx ae.Context, country string, isbn isbn13.ISBN13) (resp *data.
 	funcs := []func(ae.Context, string, isbn13.ISBN13) (*data.BookMetaData, error){
 		cache.LookupISBN,
 		persistence.LookupISBN,
-		googlebooks.LookupISBN,
+		func(ctx ae.Context, country string, isbn isbn13.ISBN13) (*data.BookMetaData, error) {
+			r, err := googlebooks.LookupISBN(ctx, country, isbn)
+
+			if err == nil {
+				go cache.CacheISBNResult(ctx, country, isbn, r)
+				go persistence.StoreISBNResult(ctx, country, isbn, r)
+			}
+			
+			return r, err
+		},
 	}
 
 	var multi ae.MultiError

@@ -3,12 +3,10 @@ package googlebooks
 import (
 	"appengine"
 	"appengine/urlfetch"
-	"cache"
 	"data"
 	"encoding/json"
 	"fmt"
 	"isbn13"
-	"persistence"
 	"net/http"
 )
 
@@ -26,8 +24,6 @@ func LookupISBN(ctx appengine.Context, country string, isbn isbn13.ISBN13) (resp
 
 		if err = decode.Decode(reply); err == nil && reply.Count == 1 {
 			resp = &reply.BookInfos[0]
-			go cache.CacheISBNResult(ctx, country, isbn, resp)
-			go persistence.StoreISBNResult(ctx, country, isbn, resp)
 		}
 	}
 
