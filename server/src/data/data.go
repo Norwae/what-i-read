@@ -23,3 +23,7 @@ type LookupReply struct {
 	Count     int            `json:"totalItems"`
 	BookInfos []BookMetaData `json:"items"`
 }
+
+type Bookshelf struct {
+	Books []BookMetaData
+}
