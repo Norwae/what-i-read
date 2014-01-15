@@ -8,8 +8,9 @@ import (
 	"fmt"
 	"googlebooks"
 	"isbn13"
-	"net/http"
 	"log"
+	"net/http"
+	"persistence"
 )
 
 func init() {
@@ -17,22 +18,23 @@ func init() {
 }
 
 func LookupISBN(ctx ae.Context, country string, isbn isbn13.ISBN13) (resp *data.BookMetaData, err error) {
-	funcs := []func(ae.Context, string, isbn13.ISBN13)(*data.BookMetaData, error) {
+	funcs := []func(ae.Context, string, isbn13.ISBN13) (*data.BookMetaData, error){
 		cache.LookupISBN,
+		persistence.LookupISBN,
 		googlebooks.LookupISBN,
 	}
-	
+
 	var multi ae.MultiError
-	
+
 	for i, f := range funcs {
 		if result, err := f(ctx, country, isbn); err == nil {
-			log.Printf("Found info %v after %d iterations\n", result, i) 
+			log.Printf("Found info %v after %d iterations\n", result, i)
 			return result, nil
 		} else {
 			multi = append(multi, err)
 		}
 	}
-	
+
 	return nil, multi
 }
 

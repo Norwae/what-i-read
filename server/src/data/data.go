@@ -7,11 +7,16 @@ type VolumeInfo struct {
 }
 
 type BookMetaData struct {
-	Volume      VolumeInfo        `json:"volumeInfo"`
-	Publisher   string            `json:"publisher,omitempty"`
-	Description string            `json:"publisher,omitempty"`
-	Images      map[string]string `json:"imageLink"`
-	PageCount   int               `json:"pageCount,omitempty"`
+	Volume      VolumeInfo `json:"volumeInfo" datastore:",noindex"`
+	Publisher   string     `json:"publisher,omitempty" datastore:",noindex"`
+	Description string     `json:"publisher,omitempty" datastore:",noindex"`
+	Images      ImageLinks `json:"imageLink,omitEmpty" datastore:",noindex"`
+	PageCount   int        `json:"pageCount,omitempty" datastore:",noindex"`
+}
+
+type ImageLinks struct {
+	ThumbnailSmall string `json:"smallThumbnail,omitempty" datastore:",noindex"`
+	Thumbnail      string `json:"thumbnail,omitempty" datastore:",noindex"`
 }
 
 type LookupReply struct {
