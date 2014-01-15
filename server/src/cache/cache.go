@@ -5,6 +5,7 @@ import (
 	mc "appengine/memcache"
 	"data"
 	"isbn13"
+	"strings"
 )
 
 func LookupISBN(ctx ae.Context, country string, isbn isbn13.ISBN13) (resp *data.LookupReply, err error) {
@@ -14,7 +15,7 @@ func LookupISBN(ctx ae.Context, country string, isbn isbn13.ISBN13) (resp *data.
 	if _, err = mc.Gob.Get(ctx, key, found); err == nil {
 		resp = found
 	}
-	
+
 	return
 }
 
@@ -29,5 +30,5 @@ func CacheISBNResult(ctx ae.Context, country string, isbn isbn13.ISBN13, data *d
 }
 
 func key(country string, isbn isbn13.ISBN13) string {
-	return string(append([]byte(country), []byte(isbn.String())...))
+	return strings.Join([]string{country, isbn.String()}, ":")
 }
