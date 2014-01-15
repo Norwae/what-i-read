@@ -13,7 +13,7 @@ import (
 
 const lookupURLTemplate = "https://www.googleapis.com/books/v1/volumes?q=isbn:%d&country=%s&key=%s"
 
-func LookupISBN(ctx appengine.Context, country string, isbn isbn13.ISBN13) (resp *data.LookupReply, err error) {
+func LookupISBN(ctx appengine.Context, country string, isbn isbn13.ISBN13) (resp *data.BookMetaData, err error) {
 	var r *http.Response
 	url := fmt.Sprintf(lookupURLTemplate, uint64(isbn), country, apiKey)
 
@@ -23,8 +23,8 @@ func LookupISBN(ctx appengine.Context, country string, isbn isbn13.ISBN13) (resp
 		decode := json.NewDecoder(r.Body)
 		defer r.Body.Close()
 
-		if err = decode.Decode(reply); err == nil {
-			resp = reply
+		if err = decode.Decode(reply); err == nil && reply.Count == 1 {
+			resp = &reply.BookInfos[0]
 			cache.CacheISBNResult(ctx, country, isbn, resp)
 		}
 	}

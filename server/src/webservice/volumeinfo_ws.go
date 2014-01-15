@@ -16,8 +16,8 @@ func init() {
 	http.HandleFunc("/lookup/", hw)
 }
 
-func LookupISBN(ctx ae.Context, country string, isbn isbn13.ISBN13) (resp *data.LookupReply, err error) {
-	funcs := []func(ae.Context, string, isbn13.ISBN13)(*data.LookupReply, error) {
+func LookupISBN(ctx ae.Context, country string, isbn isbn13.ISBN13) (resp *data.BookMetaData, err error) {
+	funcs := []func(ae.Context, string, isbn13.ISBN13)(*data.BookMetaData, error) {
 		cache.LookupISBN,
 		googlebooks.LookupISBN,
 	}
@@ -40,7 +40,7 @@ func hw(w http.ResponseWriter, rq *http.Request) {
 	isbn, err := isbn13.New(rq.URL.Path[8:])
 
 	if err == nil {
-		var reply *data.LookupReply
+		var reply *data.BookMetaData
 		ctx := ae.NewContext(rq)
 		if reply, err = LookupISBN(ctx, "de", isbn); err == nil {
 			encode := json.NewEncoder(w)

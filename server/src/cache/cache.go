@@ -8,9 +8,9 @@ import (
 	"strings"
 )
 
-func LookupISBN(ctx ae.Context, country string, isbn isbn13.ISBN13) (resp *data.LookupReply, err error) {
+func LookupISBN(ctx ae.Context, country string, isbn isbn13.ISBN13) (resp *data.BookMetaData, err error) {
 	key := key(country, isbn)
-	found := new(data.LookupReply)
+	found := new(data.BookMetaData)
 
 	if _, err = mc.Gob.Get(ctx, key, found); err == nil {
 		resp = found
@@ -19,7 +19,7 @@ func LookupISBN(ctx ae.Context, country string, isbn isbn13.ISBN13) (resp *data.
 	return
 }
 
-func CacheISBNResult(ctx ae.Context, country string, isbn isbn13.ISBN13, data *data.LookupReply) {
+func CacheISBNResult(ctx ae.Context, country string, isbn isbn13.ISBN13, data *data.BookMetaData) {
 	key := key(country, isbn)
 	item := mc.Item{
 		Key:    key,
