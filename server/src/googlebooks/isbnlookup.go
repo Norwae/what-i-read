@@ -24,6 +24,7 @@ func LookupISBN(ctx appengine.Context, country string, isbn isbn13.ISBN13) (resp
 
 		if err = decode.Decode(reply); err == nil && reply.Count == 1 {
 			resp = &reply.BookInfos[0]
+			resp.ISBN = isbn.String()
 		}
 	}
 
