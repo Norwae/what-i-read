@@ -10,7 +10,8 @@ type VolumeInfo struct {
 type BookMetaData struct {
 	Volume      VolumeInfo `json:"volumeInfo" datastore:",noindex"`
 	Publisher   string     `json:"publisher,omitempty" datastore:",noindex"`
-	Description string     `json:"publisher,omitempty" datastore:",noindex"`
+	Description string     `json:"description,omitempty" datastore:",noindex"`
+	Comment     string     `json:"comment,omitempty" datastore:",noindex"`
 	Images      ImageLinks `json:"imageLink,omitempty" datastore:",noindex"`
 	PageCount   int        `json:"pageCount,omitempty" datastore:",noindex"`
 	ISBN        string
