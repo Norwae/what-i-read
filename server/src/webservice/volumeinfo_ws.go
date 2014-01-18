@@ -19,6 +19,14 @@ func init() {
 
 func LookupISBN(ctx ae.Context, country string, isbn isbn13.ISBN13) (resp *data.BookMetaData, err error) {
 	funcs := []func(ae.Context, string, isbn13.ISBN13) (*data.BookMetaData, error){
+		func(ctx ae.Context, country string, isbn isbn13.ISBN13) (*data.BookMetaData, error) {
+			shelf, err := persistence.LookupBookshelf(ctx)
+			if err == nil {
+				return shelf.LookupInfo(isbn), nil
+			}
+
+			return nil, err
+		},
 		cache.LookupISBN,
 		persistence.LookupISBN,
 		func(ctx ae.Context, country string, isbn isbn13.ISBN13) (*data.BookMetaData, error) {
@@ -28,7 +36,7 @@ func LookupISBN(ctx ae.Context, country string, isbn isbn13.ISBN13) (resp *data.
 				go cache.CacheISBNResult(ctx, country, isbn, r)
 				go persistence.StoreISBNResult(ctx, country, isbn, r)
 			}
-			
+
 			return r, err
 		},
 	}
@@ -36,7 +44,7 @@ func LookupISBN(ctx ae.Context, country string, isbn isbn13.ISBN13) (resp *data.
 	var multi ae.MultiError
 
 	for i, f := range funcs {
-		if result, err := f(ctx, country, isbn); err == nil {
+		if result, err := f(ctx, country, isbn); err == nil && result != nil {
 			log.Printf("Found info %v after %d iterations\n", result, i)
 			return result, nil
 		} else {

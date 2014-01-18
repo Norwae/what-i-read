@@ -6,6 +6,7 @@ import (
 )
 
 func (shelf *Bookshelf) Search(term string) (r []*data.BookMetaData) {
+	r = make([]*data.BookMetaData, 0, len(shelf.Books))
 	c := func(whole string) bool {
 		return strings.Contains(whole, term)
 	}
