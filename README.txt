@@ -1,0 +1,1 @@
+This is the repository of the What I Read app. It contains the actual app (in the client subdirectory) and the support server written for google appengine (in the server subdirectory). The relevant subdirectory contains more detailed information.
