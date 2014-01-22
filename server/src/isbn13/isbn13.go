@@ -45,5 +45,5 @@ func CheckDigit(isbn ISBN13) uint8 {
 }
 
 func (isbn ISBN13) String() string {
-	return strconv.FormatUint(uint64(isbn), 10) 
+	return strconv.FormatUint(uint64(isbn), 10)
 }

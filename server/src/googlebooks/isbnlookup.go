@@ -7,8 +7,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"isbn13"
-	"net/http"
 	"log"
+	"net/http"
 )
 
 const lookupURLTemplate = "https://www.googleapis.com/books/v1/volumes?q=isbn:%d&country=%s&key=%s&fields=items(volumeInfo(authors%%2Cdescription%%2CimageLinks(large%%2Cmedium%%2Csmall%%2CsmallThumbnail%%2Cthumbnail)%%2CpageCount%%2Cpublisher%%2Csubtitle%%2Ctitle))%%2CtotalItems"
