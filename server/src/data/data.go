@@ -14,7 +14,7 @@ type BookMetaData struct {
 	Comment     string     `json:"comment,omitempty" datastore:",noindex"`
 	Images      ImageLinks `json:"imageLink,omitempty" datastore:",noindex"`
 	PageCount   int        `json:"pageCount,omitempty" datastore:",noindex"`
-	ISBN        string     `json:"isbn" datastore:"noindex"`
+	ISBN        string     `json:"isbn" datastore:",noindex"`
 }
 
 type ImageLinks struct {
