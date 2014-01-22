@@ -9,7 +9,6 @@ import (
 	"errors"
 	"googlebooks"
 	"isbn13"
-	"log"
 	"net/http"
 	"persistence"
 )
@@ -47,9 +46,9 @@ func LookupISBN(ctx ae.Context, country string, isbn isbn13.ISBN13) (resp *data.
 
 	for i, f := range funcs {
 		if result, err := f(ctx, country, isbn); err == nil && result != nil {
-			log.Printf("Found info %v after %d iterations\n", result, i)
+			ctx.Debugf("Found info %v after %d iterations\n", result, i)
 			return result, nil
-		} else {
+		} else if err != nil {
 			multi = append(multi, err)
 		}
 	}
@@ -83,7 +82,7 @@ func serveImportExport(w http.ResponseWriter, rq *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		w.Header().Add("Content-Type", "application/json")
 		if err = encode.Encode(shelf); err != nil {
-			log.Printf("Could not report error on encode: %s\n", err.Error())
+			ctx.Errorf("Could not report error on encode: %s\n", err.Error())
 		}
 
 	}
@@ -119,7 +118,7 @@ func reportError(e error) {
 			reportError(next)
 		}
 	} else {
-		log.Printf("Error reported: %s", e.Error())
+		ctx.Errorf("Error reported: %s", e.Error())
 	}
 }
 

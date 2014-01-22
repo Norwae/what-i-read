@@ -7,7 +7,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"isbn13"
-	"log"
 	"net/http"
 )
 
@@ -16,6 +15,7 @@ const lookupURLTemplate = "https://www.googleapis.com/books/v1/volumes?q=isbn:%d
 func LookupISBN(ctx appengine.Context, country string, isbn isbn13.ISBN13) (resp *data.BookMetaData, err error) {
 	var r *http.Response
 	url := fmt.Sprintf(lookupURLTemplate, uint64(isbn), country, apiKey)
+	ctx.Debugf("Calling %s", fmt.Sprintf(lookupURLTemplate, uint64(isbn), country, "<hidden>"))
 
 	client := urlfetch.Client(ctx)
 	if r, err = client.Get(url); err == nil {
@@ -23,7 +23,7 @@ func LookupISBN(ctx appengine.Context, country string, isbn isbn13.ISBN13) (resp
 		decode := json.NewDecoder(r.Body)
 		defer r.Body.Close()
 
-		log.Printf("Completed API call, result %s\n", r.Status)
+		ctx.Infof("Completed API call, result %s\n", r.Status)
 
 		if err = decode.Decode(reply); err == nil && reply.Count == 1 {
 			resp = &reply.BookInfos[0]

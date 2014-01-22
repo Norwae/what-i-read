@@ -5,7 +5,6 @@ import (
 	ds "appengine/datastore"
 	"data"
 	"isbn13"
-	"log"
 	"strings"
 )
 
@@ -25,7 +24,7 @@ func StoreISBNResult(ctx ae.Context, country string, isbn isbn13.ISBN13, data *d
 	key := ds.NewKey(ctx, kindBookInfo, key(country, isbn), 0, nil)
 	_, err := ds.Put(ctx, key, data)
 
-	log.Print("Put ", isbn, " with result ", err)
+	ctx.Infof("Put ", isbn, " with result ", err)
 }
 
 func key(country string, isbn isbn13.ISBN13) string {
