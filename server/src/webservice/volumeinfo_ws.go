@@ -94,8 +94,11 @@ func handlePut(w http.ResponseWriter, rq *http.Request, isbn isbn13.ISBN13) erro
 		decode := json.NewDecoder(rq.Body)
 		info := new(data.BookMetaData)
 		if err = decode.Decode(info); err == nil {
-
-			shelf.Books = append(shelf.Books, *info)
+			if ptr, _ := shelf.LookupInfo(isbn); ptr != nil {
+				*ptr = *info
+			} else {
+				shelf.Books = append(shelf.Books, *info)
+			}
 
 		}
 	}
