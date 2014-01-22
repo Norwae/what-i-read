@@ -2,9 +2,11 @@ package webservice
 
 import (
 	ae "appengine"
+	ds "appengine/datastore"
 	"cache"
 	"data"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"googlebooks"
 	"isbn13"
@@ -14,7 +16,7 @@ import (
 )
 
 func init() {
-	http.HandleFunc("/lookup/", hw)
+	http.HandleFunc("/volumes/", serveLookup)
 }
 
 func LookupISBN(ctx ae.Context, country string, isbn isbn13.ISBN13) (resp *data.BookMetaData, err error) {
@@ -22,7 +24,7 @@ func LookupISBN(ctx ae.Context, country string, isbn isbn13.ISBN13) (resp *data.
 		func(ctx ae.Context, country string, isbn isbn13.ISBN13) (*data.BookMetaData, error) {
 			shelf, err := persistence.LookupBookshelf(ctx)
 			if err == nil {
-				return shelf.LookupInfo(isbn), nil
+				return shelf.LookupInfo(isbn)
 			}
 
 			return nil, err
@@ -55,21 +57,64 @@ func LookupISBN(ctx ae.Context, country string, isbn isbn13.ISBN13) (resp *data.
 	return nil, multi
 }
 
-func hw(w http.ResponseWriter, rq *http.Request) {
-	isbn, err := isbn13.New(rq.URL.Path[8:])
+func serveLookup(w http.ResponseWriter, rq *http.Request) {
+	isbn, err := isbn13.New(rq.URL.Path[9:])
+	status := http.StatusBadRequest
 
 	if err == nil {
-		var reply *data.BookMetaData
-		ctx := ae.NewContext(rq)
-		if reply, err = LookupISBN(ctx, "de", isbn); err == nil {
-			encode := json.NewEncoder(w)
+		status = http.StatusInternalServerError
+		switch rq.Method {
+		case "GET":
+			err = handleGet(w, rq, isbn)
+		case "PUT":
+			err = handlePut(w, rq, isbn)
+		default:
+			status = http.StatusMethodNotAllowed
+			err = errors.New("Unsupported operation. Only GET, PUT and DELETE methods are allowed")
+		}
 
-			if err = encode.Encode(reply); err == nil {
-				return
-			}
+	}
+
+	if err != nil {
+		w.WriteHeader(status)
+		fmt.Fprintf(w, "Ooops, %s (%v)!\n", rq.URL.Path, err)
+	}
+}
+
+func handlePut(w http.ResponseWriter, rq *http.Request, isbn isbn13.ISBN13) error {
+	ctx := ae.NewContext(rq)
+	shelf, err := persistence.LookupBookshelf(ctx)
+
+	if err == ds.ErrNoSuchEntity {
+		err = nil
+		shelf = new(data.Bookshelf)
+	}
+
+	if err == nil {
+		decode := json.NewDecoder(rq.Body)
+		info := new(data.BookMetaData)
+		if err = decode.Decode(info); err == nil {
+
+			shelf.Books = append(shelf.Books, *info)
+
+		}
+	}
+	return err
+
+}
+
+func handleGet(w http.ResponseWriter, rq *http.Request, isbn isbn13.ISBN13) error {
+	var reply *data.BookMetaData
+	var err error
+	ctx := ae.NewContext(rq)
+	if reply, err = LookupISBN(ctx, "de", isbn); err == nil {
+		encode := json.NewEncoder(w)
+		w.WriteHeader(http.StatusOK)
+		w.Header().Add("Content-Type", "application/json")
+		if err = encode.Encode(reply); err == nil {
+			return nil
 		}
 	}
 
-	w.WriteHeader(500)
-	fmt.Fprintf(w, "Ooops, %s (%v)!\n", rq.URL.Path, err)
+	return err
 }
