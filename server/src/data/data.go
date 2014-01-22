@@ -5,15 +5,15 @@ type VolumeInfo struct {
 	Subtitle string   `json:"subtitle,omitempty"`
 	Series   string   `json:"series,omitempty"`
 	Authors  []string `json:"authors"`
+	Publisher   string     `json:"publisher,omitempty" datastore:",noindex"`
+	Images      ImageLinks `json:"imageLinks,omitempty" datastore:",noindex"`
+	PageCount   int        `json:"pageCount,omitempty" datastore:",noindex"`
 }
 
 type BookMetaData struct {
 	Volume      VolumeInfo `json:"volumeInfo" datastore:",noindex"`
-	Publisher   string     `json:"publisher,omitempty" datastore:",noindex"`
 	Description string     `json:"description,omitempty" datastore:",noindex"`
 	Comment     string     `json:"comment,omitempty" datastore:",noindex"`
-	Images      ImageLinks `json:"imageLink,omitempty" datastore:",noindex"`
-	PageCount   int        `json:"pageCount,omitempty" datastore:",noindex"`
 	ISBN        string     `json:"isbn" datastore:",noindex"`
 }
 
