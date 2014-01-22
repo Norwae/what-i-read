@@ -16,6 +16,7 @@ import (
 
 func init() {
 	http.HandleFunc("/volumes/", serveLookup)
+	http.HandleFunc("/volumes", serveImportExport)
 }
 
 func LookupISBN(ctx ae.Context, country string, isbn isbn13.ISBN13) (resp *data.BookMetaData, err error) {
@@ -56,6 +57,38 @@ func LookupISBN(ctx ae.Context, country string, isbn isbn13.ISBN13) (resp *data.
 	return nil, multi
 }
 
+func serveImportExport(w http.ResponseWriter, rq *http.Request) {
+	ctx := ae.NewContext(rq)
+	var err error
+	var shelf *data.Bookshelf
+	status := http.StatusBadRequest
+
+	switch rq.Method {
+	case "GET":
+		shelf, err = persistence.LookupBookshelf(ctx)
+	case "PUT":
+		decode := json.NewDecoder(rq.Body)
+		shelf = new(data.Bookshelf)
+		if err = decode.Decode(shelf); err == nil {
+			status = http.StatusInternalServerError
+			err = persistence.StoreBookshelf(ctx, shelf)
+		}
+	}
+
+	if err != nil {
+		reportError(err)
+		w.WriteHeader(status)
+	} else {
+		encode := json.NewEncoder(w)
+		w.WriteHeader(http.StatusOK)
+		w.Header().Add("Content-Type", "application/json")
+		if err = encode.Encode(shelf); err != nil {
+			log.Printf("Could not report error on encode: %s\n", err.Error())
+		}
+
+	}
+}
+
 func serveLookup(w http.ResponseWriter, rq *http.Request) {
 	isbn, err := isbn13.New(rq.URL.Path[9:])
 	status := http.StatusBadRequest
@@ -82,7 +115,9 @@ func serveLookup(w http.ResponseWriter, rq *http.Request) {
 
 func reportError(e error) {
 	if me, ok := e.(ae.MultiError); ok {
-		for _, next := range me { reportError(next);}
+		for _, next := range me {
+			reportError(next)
+		}
 	} else {
 		log.Printf("Error reported: %s", e.Error())
 	}
@@ -107,6 +142,7 @@ func handlePut(w http.ResponseWriter, rq *http.Request, isbn isbn13.ISBN13) erro
 				shelf.Books = append(shelf.Books, *info)
 			}
 
+			err = persistence.StoreBookshelf(ctx, shelf)
 		}
 	}
 	return err
