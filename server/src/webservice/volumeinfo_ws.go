@@ -110,7 +110,8 @@ func handleGet(w http.ResponseWriter, rq *http.Request, isbn isbn13.ISBN13) erro
 	var reply *data.BookMetaData
 	var err error
 	ctx := ae.NewContext(rq)
-	if reply, err = LookupISBN(ctx, "de", isbn); err == nil {
+	country := determineCountry(rq)
+	if reply, err = LookupISBN(ctx, country, isbn); err == nil {
 		encode := json.NewEncoder(w)
 		w.WriteHeader(http.StatusOK)
 		w.Header().Add("Content-Type", "application/json")
@@ -120,4 +121,19 @@ func handleGet(w http.ResponseWriter, rq *http.Request, isbn isbn13.ISBN13) erro
 	}
 
 	return err
+}
+
+func determineCountry(rq *http.Request) string {
+	header := rq.Header["X-AppEngine-Country"]
+	if len(header) > 0 {
+		return header[0]
+	}
+	query := rq.URL.Query()["country"]
+
+	if len(query) > 0 {
+		return query[0]
+	}
+
+	return "unknown"
+
 }
