@@ -7,7 +7,6 @@ import (
 	"data"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"googlebooks"
 	"isbn13"
 	"log"
@@ -76,8 +75,16 @@ func serveLookup(w http.ResponseWriter, rq *http.Request) {
 	}
 
 	if err != nil {
+		reportError(err)
 		w.WriteHeader(status)
-		fmt.Fprintf(w, "Ooops, %s (%v)!\n", rq.URL.Path, err)
+	}
+}
+
+func reportError(e error) {
+	if me, ok := e.(ae.MultiError); ok {
+		for _, next := range me { reportError(next);}
+	} else {
+		log.Printf("Error reported: %s", e.Error())
 	}
 }
 
