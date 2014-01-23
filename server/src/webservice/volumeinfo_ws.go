@@ -171,7 +171,7 @@ func compositeISBNLookup(ctx ae.Context, country string, isbn isbn13.ISBN13) (re
 		func(ctx ae.Context, country string, isbn isbn13.ISBN13) (*data.BookMetaData, error) {
 			r, err := googlebooks.LookupISBN(ctx, country, isbn)
 
-			if err == nil {
+			if err == nil && r != nil {
 				go cache.CacheISBNResult(ctx, country, isbn, r)
 				go persistence.StoreISBNResult(ctx, country, isbn, r)
 			}
