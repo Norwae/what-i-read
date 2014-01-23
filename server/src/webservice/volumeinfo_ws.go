@@ -33,6 +33,8 @@ func (call *Call) DetermineCountry() string {
 	header := call.Request.Header["X-AppEngine-Country"]
 	if len(header) > 0 {
 		return header[0]
+	} else {
+		call.Context.Warningf("Could not auto-detect country (available headers: %v), falling back to query parameter", call.Request.Header)
 	}
 
 	query := call.Request.URL.Query()["country"]
