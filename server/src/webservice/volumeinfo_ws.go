@@ -30,9 +30,14 @@ func (call *Call) ReportError(err error) {
 }
 
 func (call *Call) DetermineCountry() string {
-	header := call.Request.Header["X-AppEngine-Country"]
+	header := call.Request.Header["X-Appengine-Country"]
 	if len(header) > 0 {
-		return header[0]
+		country := header[0]
+		
+		if country != "ZZ" {
+			return country
+		}
+		call.Context.Debugf("Falling back to user-supplied country in dev server")
 	} else {
 		call.Context.Warningf("Could not auto-detect country (available headers: %v), falling back to query parameter", call.Request.Header)
 	}
