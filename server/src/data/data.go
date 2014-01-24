@@ -1,20 +1,21 @@
 package data
 
 type VolumeInfo struct {
-	Title     string     `json:"title"`
-	Subtitle  string     `json:"subtitle,omitempty"`
-	Series    string     `json:"series,omitempty"`
-	Authors   []string   `json:"authors"`
-	Publisher string     `json:"publisher,omitempty" datastore:",noindex"`
-	Images    ImageLinks `json:"imageLinks,omitempty" datastore:",noindex"`
-	PageCount int        `json:"pageCount,omitempty" datastore:",noindex"`
+	Title       string     `json:"title"`
+	Subtitle    string     `json:"subtitle,omitempty"`
+	Series      string     `json:"series,omitempty"`
+	Description string     `json:"description,omitempty" datastore:",noindex"`
+	Authors     []string   `json:"authors"`
+	Publisher   string     `json:"publisher,omitempty" datastore:",noindex"`
+	Images      ImageLinks `json:"imageLinks,omitempty" datastore:",noindex"`
+	PageCount   int        `json:"pageCount,omitempty" datastore:",noindex"`
 }
 
 type BookMetaData struct {
-	Volume      VolumeInfo `json:"volumeInfo" datastore:",noindex"`
-	Description string     `json:"description,omitempty" datastore:",noindex"`
-	Comment     string     `json:"comment,omitempty" datastore:",noindex"`
-	ISBN        string     `json:"isbn" datastore:",noindex"`
+	Volume  VolumeInfo `json:"volumeInfo" datastore:",noindex"`
+	Comment string     `json:"comment,omitempty" datastore:",noindex"`
+	ISBN    string     `json:"isbn" datastore:",noindex"`
+	Known   bool       `json:"known" datastore:",noindex"`
 }
 
 type ImageLinks struct {
