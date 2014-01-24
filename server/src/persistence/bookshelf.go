@@ -6,42 +6,39 @@ import (
 	mc "appengine/memcache"
 	"appengine/user"
 	"data"
-	"sync"
+	"time"
 )
 
 const kindBookshelf = "bookshelf"
 
 func StoreBookshelf(ctx ae.Context, shelf *data.Bookshelf) error {
-	var group sync.WaitGroup
 	user := user.Current(ctx)
+	err := storeBookshelfDatastore(ctx, user, shelf)
 
-	group.Add(2)
-
-	wrap := func(f func(ae.Context, string, *data.Bookshelf)) {
-		defer group.Done()
-
-		f(ctx, user, shelf)
+	if err == nil {
+		storeBookshelfMemcache(ctx, user, shelf)
 	}
 
-	go wrap(storeBookshelfDatastore)
-	go wrap(storeBookshelfMemcache)
-	group.Wait()
+	return err
 }
 
 func storeBookshelfMemcache(ctx ae.Context, uid string, shelf *data.Bookshelf) {
 	item := mc.Item{
-		Key:    uid,
-		Object: data,
+		Key:        uid,
+		Object:     data,
+		Expiration: 15 * time.Minute,
 	}
 
 	mc.Gob.Add(ctx, &item)
 }
 
-func storeBookshelfDatastore(ctx ae.Context, uid string, shelf *data.Bookshelf) {
+func storeBookshelfDatastore(ctx ae.Context, uid string, shelf *data.Bookshelf) error {
 	key := ds.NewKey(ctx, kindBookshelf, uid, 0, nil)
 	_, err := ds.Put(ctx, key, shelf)
 
 	ctx.Infof("Put ", shelf, " with result ", err)
+
+	return err
 }
 
 func lookupShelfDatastore(ctx ae.Context, user string, ptr *data.Bookshelf) error {
