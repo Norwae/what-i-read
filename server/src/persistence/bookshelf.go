@@ -23,10 +23,11 @@ func LookupBookshelf(ctx ae.Context) (*data.Bookshelf, error) {
 	key := ds.NewKey(ctx, kindBookshelf, user.ID, 0, nil)
 
 	found := new(data.Bookshelf)
-	var err error
-	if err = ds.Get(ctx, key, found); err == nil {
+
+	err := ds.Get(ctx, key, found)
+	if err == nil || err == ds.ErrNoSuchEntity {
 		return found, nil
 	}
-
+	
 	return nil, err
 }
