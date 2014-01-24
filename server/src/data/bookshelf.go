@@ -1,7 +1,6 @@
 package data
 
 import (
-	"errors"
 	"isbn13"
 	"strings"
 )
@@ -21,14 +20,14 @@ func (shelf *Bookshelf) Search(term string) (r []*BookMetaData) {
 	return
 }
 
-func (shelf *Bookshelf) LookupInfo(isbn isbn13.ISBN13) (*BookMetaData, error) {
+func (shelf *Bookshelf) LookupInfo(isbn isbn13.ISBN13) *BookMetaData{
 	for i := range shelf.Books {
 		book := &shelf.Books[i]
 
 		if book.ISBN == isbn.String() {
-			return book, nil
+			return book
 		}
 	}
 
-	return nil, errors.New("No book found")
+	return nil
 }

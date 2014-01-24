@@ -3,7 +3,6 @@ package webservice
 import (
 	ae "appengine"
 	ds "appengine/datastore"
-	"cache"
 	"data"
 	"encoding/json"
 	"errors"
@@ -19,21 +18,25 @@ type Call struct {
 	Response http.ResponseWriter
 }
 
-func (call *Call) ReportError(err error) {
+func (call *Call) writeError(err error, strings []string) []string {
 	if me, ok := err.(ae.MultiError); ok {
 		for _, next := range me {
-			call.ReportError(next)
+			strings = call.writeError(next, strings)
 		}
 	} else {
-		call.Context.Errorf("Error reported: %s", err.Error())
+		str := err.Error()
+		call.Context.Errorf("Error reported: %s", str)
+		strings = append(strings, str)
 	}
+
+	return strings
 }
 
 func (call *Call) DetermineCountry() string {
 	header := call.Request.Header["X-Appengine-Country"]
 	if len(header) > 0 {
 		country := header[0]
-		
+
 		if country != "ZZ" {
 			return country
 		}
@@ -51,7 +54,7 @@ func (call *Call) DetermineCountry() string {
 	return "unknown"
 }
 
-type CallHandler func(*Call) error
+type CallHandler func(*Call) (interface{}, error)
 
 func (function CallHandler) ServeHTTP(w http.ResponseWriter, rq *http.Request) {
 	call := Call{
@@ -60,10 +63,18 @@ func (function CallHandler) ServeHTTP(w http.ResponseWriter, rq *http.Request) {
 		Response: w,
 	}
 
-	err := function(&call)
+	call.Response.Header().Add("Content-Type", "application/json;charset=UTF-8")
+	result, err := function(&call)
+	encoder := json.NewEncoder(w)
 
 	if err != nil {
-		call.ReportError(err)
+		errors := call.writeError(err, nil)
+		call.Response.WriteHeader(http.StatusInternalServerError)
+		encoder.Encode(map[string][]string{
+			"errors": errors,
+		})
+	} else {
+		encoder.Encode(result)
 	}
 }
 
@@ -72,29 +83,20 @@ func init() {
 	http.Handle("/volumes", CallHandler(serveVolumeBulk))
 }
 
-func serveVolumeBulk(call *Call) (err error) {
+func serveVolumeBulk(call *Call) (interface{}, error) {
 	var shelf *data.Bookshelf
-	status := http.StatusInternalServerError
+	var err error
+
 	switch call.Request.Method {
 	case "GET":
 		shelf, err = persistence.LookupBookshelf(call.Context)
 	case "PUT":
 		shelf, err = putVolumeBulk(call)
 	default:
-		status = http.StatusMethodNotAllowed
 		err = errors.New("Unsupported operation. Only GET, PUT and DELETE methods are allowed")
 	}
 
-	if err == nil {
-		encode := json.NewEncoder(call.Response)
-		call.Response.Header().Add("Content-Type", "application/json")
-		call.Response.WriteHeader(http.StatusOK)
-		err = encode.Encode(shelf)
-	} else {
-		call.Response.WriteHeader(status)
-	}
-
-	return err
+	return shelf, err
 }
 
 func putVolumeBulk(call *Call) (shelf *data.Bookshelf, err error) {
@@ -107,35 +109,22 @@ func putVolumeBulk(call *Call) (shelf *data.Bookshelf, err error) {
 	return
 }
 
-func serveVolumeSingle(call *Call) error {
-	status := http.StatusBadRequest
+func serveVolumeSingle(call *Call) (interface{}, error) {
 	isbn, err := isbn13.New(call.Request.URL.Path[9:])
 	var book *data.BookMetaData
 
 	if err == nil {
-		status = http.StatusInternalServerError
 		switch call.Request.Method {
 		case "GET":
 			book, err = compositeISBNLookup(call.Context, call.DetermineCountry(), isbn)
 		case "PUT":
 			book, err = putVolumeSingle(call, isbn)
 		default:
-			status = http.StatusMethodNotAllowed
 			err = errors.New("Unsupported operation. Only GET, PUT and DELETE methods are allowed")
 		}
 	}
 
-	if err == nil {
-		encode := json.NewEncoder(call.Response)
-
-		call.Response.Header().Add("Content-Type", "application/json")
-		call.Response.WriteHeader(http.StatusOK)
-		err = encode.Encode(book)
-	} else {
-		call.Response.WriteHeader(status)
-	}
-
-	return err
+	return book, err
 }
 
 func putVolumeSingle(call *Call, isbn isbn13.ISBN13) (*data.BookMetaData, error) {
@@ -151,7 +140,7 @@ func putVolumeSingle(call *Call, isbn isbn13.ISBN13) (*data.BookMetaData, error)
 		decode := json.NewDecoder(call.Request.Body)
 		info = new(data.BookMetaData)
 		if err = decode.Decode(info); err == nil {
-			if ptr, _ := shelf.LookupInfo(isbn); ptr != nil {
+			if ptr := shelf.LookupInfo(isbn); ptr != nil {
 				*ptr = *info
 			} else {
 				shelf.Books = append(shelf.Books, *info)
@@ -164,39 +153,27 @@ func putVolumeSingle(call *Call, isbn isbn13.ISBN13) (*data.BookMetaData, error)
 }
 
 func compositeISBNLookup(ctx ae.Context, country string, isbn isbn13.ISBN13) (resp *data.BookMetaData, err error) {
-	funcs := []func(ae.Context, string, isbn13.ISBN13) (*data.BookMetaData, error){
-		func(ctx ae.Context, country string, isbn isbn13.ISBN13) (*data.BookMetaData, error) {
-			shelf, err := persistence.LookupBookshelf(ctx)
-			if err == nil {
-				return shelf.LookupInfo(isbn)
-			}
-
-			return nil, err
-		},
-		cache.LookupISBN,
-		persistence.LookupISBN,
-		func(ctx ae.Context, country string, isbn isbn13.ISBN13) (*data.BookMetaData, error) {
-			r, err := googlebooks.LookupISBN(ctx, country, isbn)
-
-			if err == nil && r != nil {
-				go cache.CacheISBNResult(ctx, country, isbn, r)
-				go persistence.StoreISBNResult(ctx, country, isbn, r)
-			}
-
-			return r, err
-		},
-	}
-
-	var multi ae.MultiError
-
-	for i, f := range funcs {
-		if result, err := f(ctx, country, isbn); err == nil && result != nil {
-			ctx.Debugf("Found info %v after %d iterations\n", result, i)
-			return result, nil
-		} else if err != nil {
-			multi = append(multi, err)
+	var errors ae.MultiError
+	if shelf, err := persistence.LookupBookshelf(ctx); err == nil {
+		if book := shelf.LookupInfo(isbn); book != nil {
+			return book, nil
 		}
+	} else {
+		errors = append(errors, err)
 	}
 
-	return nil, multi
+	if book, err := persistence.LookupISBN(ctx, country, isbn); err == nil {
+		return book, nil
+	} else {
+		errors = append(errors, err)
+	}
+
+	if r, err := googlebooks.LookupISBN(ctx, country, isbn); err == nil {
+		persistence.StoreISBNResult(ctx, country, isbn, r)
+		return r, nil
+	} else {
+		errors = append(errors, err)
+	}
+
+	return nil, errors
 }
