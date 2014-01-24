@@ -153,15 +153,16 @@ func putVolumeSingle(call *Call, isbn isbn13.ISBN13) (*data.BookMetaData, error)
 }
 
 func compositeISBNLookup(ctx ae.Context, country string, isbn isbn13.ISBN13) (resp *data.BookMetaData, err error) {
-	var errors ae.MultiError
+	// look in my own library first - if this fails badly, abort anything further
 	if shelf, err := persistence.LookupBookshelf(ctx); err == nil {
 		if book := shelf.LookupInfo(isbn); book != nil {
 			return book, nil
 		}
 	} else {
-		errors = append(errors, err)
+		return nil, err
 	}
 
+	var errors ae.MultiError
 	if book, err := persistence.LookupISBN(ctx, country, isbn); err == nil {
 		return book, nil
 	} else {

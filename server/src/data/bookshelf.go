@@ -20,7 +20,7 @@ func (shelf *Bookshelf) Search(term string) (r []*BookMetaData) {
 	return
 }
 
-func (shelf *Bookshelf) LookupInfo(isbn isbn13.ISBN13) *BookMetaData{
+func (shelf *Bookshelf) LookupInfo(isbn isbn13.ISBN13) *BookMetaData {
 	for i := range shelf.Books {
 		book := &shelf.Books[i]
 

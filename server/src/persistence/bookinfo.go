@@ -16,9 +16,9 @@ func LookupISBN(ctx ae.Context, country string, isbn isbn13.ISBN13) (*data.BookM
 	keyString := key(country, isbn)
 	if result, err := lookupISBNMemcache(ctx, keyString); err == nil {
 		return result, err
-	} else {
-		return lookupISBNDatastore(ctx, keyString)
 	}
+
+	return lookupISBNDatastore(ctx, keyString)
 }
 
 func lookupISBNDatastore(ctx ae.Context, keyStr string) (resp *data.BookMetaData, err error) {
