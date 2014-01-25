@@ -83,12 +83,12 @@ func init() {
 }
 
 func serveVolumeBulk(call *Call) (interface{}, error) {
-	var shelf *data.Bookshelf
+	var shelf *data.LookupReply
 	var err error
 
 	switch call.Request.Method {
 	case "GET":
-		shelf, err = persistence.LookupBookshelf(call.Context)
+		shelf, err = serveVolumeBulk(call)
 	case "PUT":
 		shelf, err = putVolumeBulk(call)
 	default:
@@ -98,15 +98,41 @@ func serveVolumeBulk(call *Call) (interface{}, error) {
 	return shelf, err
 }
 
-func putVolumeBulk(call *Call) (shelf *data.Bookshelf, err error) {
+func serveVolumeBulk(call *Call) (reply *data.LookupReply, err error) {
+	var shelf *data.Bookshelf
+
+	if shelf, err = persistence.LookupBookshelf(call.Context); err == nil {
+		for _, str := range call.Request.URL.Query()["search"] {
+			matches := shelf.Search(str)
+
+			shelf := &data.Bookshelf{make([]data.BookMetaData, len(matches))}
+			for i, ptr := range matches {
+				shelf.Books[i] = *ptr
+			}
+		}
+
+		reply = &data.LookupReply{
+			Count:     len(shelf.Books),
+			BookInfos: shelf.Books,
+		}
+	}
+}
+
+func putVolumeBulk(call *Call) (reply *data.LookupReply, err error) {
 	decode := json.NewDecoder(call.Request.Body)
-	shelf = new(data.Bookshelf)
+	shelf := new(data.Bookshelf)
 	if err = decode.Decode(shelf); err == nil {
 		for i := range shelf.Books {
 			book := &shelf.Books[i]
 			normalize(call, book)
 		}
-		err = persistence.StoreBookshelf(call.Context, shelf)
+
+		if err = persistence.StoreBookshelf(call.Context, shelf); err == nil {
+			reply = &data.LookupReply{
+				Count:     len(shelf.Books),
+				BookInfos: shelf.Books,
+			}
+		}
 	}
 
 	return
