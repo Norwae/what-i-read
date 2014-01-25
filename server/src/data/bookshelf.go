@@ -12,7 +12,8 @@ func (shelf *Bookshelf) Search(term string) (r []*BookMetaData) {
 	}
 	for i := range shelf.Books {
 		book := &shelf.Books[i]
-		if c(book.Volume.Title) || c(book.Volume.Subtitle) || c(book.Volume.Series) || c(book.Volume.Authors[0]) || c(book.Description) || c(book.Comment) {
+		volume := &book.Volume
+		if c(volume.Title) || c(volume.Subtitle) || c(volume.Series) || c(volume.Authors[0]) || c(volume.Description) || c(book.Comment) {
 			r = append(r, book)
 		}
 	}

@@ -2,7 +2,6 @@ package webservice
 
 import (
 	ae "appengine"
-	ds "appengine/datastore"
 	"data"
 	"encoding/json"
 	"errors"
@@ -103,6 +102,10 @@ func putVolumeBulk(call *Call) (shelf *data.Bookshelf, err error) {
 	decode := json.NewDecoder(call.Request.Body)
 	shelf = new(data.Bookshelf)
 	if err = decode.Decode(shelf); err == nil {
+		for i := range shelf.Books {
+			book := &shelf.Books[i]
+			normalize(call, book)
+		}
 		err = persistence.StoreBookshelf(call.Context, shelf)
 	}
 
@@ -127,29 +130,40 @@ func serveVolumeSingle(call *Call) (interface{}, error) {
 	return book, err
 }
 
-func putVolumeSingle(call *Call, isbn isbn13.ISBN13) (*data.BookMetaData, error) {
-	shelf, err := persistence.LookupBookshelf(call.Context)
-	var info *data.BookMetaData
+func putVolumeSingle(call *Call, isbn isbn13.ISBN13) (info *data.BookMetaData, err error) {
+	decode := json.NewDecoder(call.Request.Body)
+	info = new(data.BookMetaData)
+	if err = decode.Decode(info); err == nil {
+		info.ISBN = isbn.String()
+		normalize(call, info)
 
-	if err == ds.ErrNoSuchEntity {
-		err = nil
-		shelf = new(data.Bookshelf)
-	}
+		persistence.UpdateBookshelf(call.Context, func(_ ae.Context, shelf *data.Bookshelf) error {
 
-	if err == nil {
-		decode := json.NewDecoder(call.Request.Body)
-		info = new(data.BookMetaData)
-		if err = decode.Decode(info); err == nil {
 			if ptr := shelf.LookupInfo(isbn); ptr != nil {
 				*ptr = *info
 			} else {
 				shelf.Books = append(shelf.Books, *info)
 			}
 
-			err = persistence.StoreBookshelf(call.Context, shelf)
-		}
+			return nil
+		})
 	}
 	return info, err
+}
+
+func normalize(call *Call, info *data.BookMetaData) {
+	var isbn isbn13.ISBN13
+	var err error
+	if isbn, err = isbn13.New(info.ISBN); err == nil {
+		var base *data.BookMetaData
+		if base, err = compositeISBNLookup(call.Context, call.DetermineCountry(), isbn); err == nil {
+			info.Volume.Images = base.Volume.Images
+			return
+		} else {
+			info.Volume.Images = data.ImageLinks{}
+		}
+	}
+	call.Context.Errorf("Could not normalize data for %s: %s", info.ISBN, err.Error())
 }
 
 func compositeISBNLookup(ctx ae.Context, country string, isbn isbn13.ISBN13) (resp *data.BookMetaData, err error) {
