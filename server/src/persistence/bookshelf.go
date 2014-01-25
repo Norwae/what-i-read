@@ -108,7 +108,9 @@ func lookupShelfDatastore(ctx ae.Context, user string) (shelf *data.Bookshelf, e
 	ancestor := ds.NewKey(ctx, kindBookshelf, user, 0, nil)
 	query := ds.NewQuery(kindBookInfo).Ancestor(ancestor)
 
-	var target data.BookMetaData
+	target := data.BookMetaData{
+		Known: true,
+	}
 
 	shelf = new(data.Bookshelf)
 

@@ -15,7 +15,7 @@ type BookMetaData struct {
 	Volume  VolumeInfo `json:"volumeInfo" datastore:",noindex"`
 	Comment string     `json:"comment,omitempty" datastore:",noindex"`
 	ISBN    string     `json:"isbn" datastore:",noindex"`
-	Known   bool       `json:"known" datastore:",noindex"`
+	Known   bool       `json:"known" datastore:"-"`
 }
 
 type ImageLinks struct {
