@@ -116,6 +116,8 @@ func serveVolumeBulk(call *Call) (reply *data.LookupReply, err error) {
 			BookInfos: shelf.Books,
 		}
 	}
+
+	return
 }
 
 func putVolumeBulk(call *Call) (reply *data.LookupReply, err error) {
