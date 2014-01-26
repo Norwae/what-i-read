@@ -34,9 +34,7 @@
     
     <string name="alert.alreadyKnown">You\'ve already read this book</string>
     
-    <string name="query.localDB">Querying local database</string>
-    <string name="query.googleBooks">Querying Google Books database</string>
-    <string name="query.fallback">Creating fallback book information</string>
+    <string name="query.wirServer">Waiting for server</string>
     
     <string name="progress.pleaseWait">Please wait</string>
     <string name="progress.initial">Performing background work</string>

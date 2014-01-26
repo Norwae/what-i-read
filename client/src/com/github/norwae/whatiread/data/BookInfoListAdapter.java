@@ -28,7 +28,7 @@ public class BookInfoListAdapter extends BaseAdapter{
 
 	@Override
 	public long getItemId(int idx) {
-		return Long.parseLong(data.get(idx).getEan13());
+		return Long.parseLong(data.get(idx).getIsbn());
 	}
 	
 	public BookInfo getInfoAt(int idx) {

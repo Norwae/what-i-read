@@ -2,10 +2,6 @@ package com.github.norwae.whatiread;
 
 import java.util.List;
 
-import com.github.norwae.whatiread.data.BookInfo;
-import com.github.norwae.whatiread.data.BookInfoListAdapter;
-import com.github.norwae.whatiread.db.BookDBQuery;
-
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -19,6 +15,9 @@ import android.widget.Button;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import com.github.norwae.whatiread.data.BookInfo;
+import com.github.norwae.whatiread.data.BookInfoListAdapter;
 
 public class BrowseFragment extends Fragment {
 
@@ -80,7 +79,8 @@ public class BrowseFragment extends Fragment {
 					progressDialog.dismiss();
 				}
 			};
-			BookDBQuery query = new BookDBQuery(receiver, this.getActivity());
+			
+			BookSearch query = new BookSearch(receiver, this.getActivity());
 
 			query.execute(text);
 	}

@@ -5,10 +5,10 @@ import android.content.Context;
 import com.github.norwae.whatiread.data.BookInfo;
 import com.github.norwae.whatiread.data.ISBNStorageProvider;
 
-public class BookDelete  extends StorageInteraction<BookInfo, String, Void> {
-
-	protected BookDelete(Context context, AsyncCallbackReceiver<Void, String> receiver) {
-		super(receiver, context);
+public class BookSave extends StorageInteraction<BookInfo, String, Void> {
+	
+	public BookSave(Context ctx, AsyncCallbackReceiver<Void, String> callback) {
+		super(callback, ctx);
 	}
 
 	@Override
@@ -16,11 +16,13 @@ public class BookDelete  extends StorageInteraction<BookInfo, String, Void> {
 		for (ISBNStorageProvider provider : allProviders) {
 			publishProgress(provider.getProgressMessage(context));
 
-			if (provider.deleteInfo(params[0], context)) {
+			if (provider.storeInfo(params[0], context)) {
 				break;
 			}
 		}
 		
 		return null;
 	}
+
+
 }

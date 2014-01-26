@@ -3,11 +3,6 @@ package com.github.norwae.whatiread;
 import java.util.Collection;
 import java.util.HashSet;
 
-import com.github.norwae.whatiread.data.BookInfo;
-import com.github.norwae.whatiread.data.ISBN13;
-import com.google.zxing.integration.android.IntentIntegrator;
-import com.google.zxing.integration.android.IntentResult;
-
 import android.app.ActionBar;
 import android.app.ActionBar.Tab;
 import android.app.ActionBar.TabListener;
@@ -26,6 +21,11 @@ import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MenuItem.OnMenuItemClickListener;
+
+import com.github.norwae.whatiread.data.BookInfo;
+import com.github.norwae.whatiread.data.ISBN13;
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 
 public class MainActivity extends FragmentActivity {
 

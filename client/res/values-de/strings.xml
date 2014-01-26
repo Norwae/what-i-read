@@ -32,9 +32,7 @@
     
     <string name="alert.alreadyKnown">Du hast dieses Buch schon gelesen</string>
     
-    <string name="query.localDB">Lokale Datenbank abrufen&#8230;</string>
-    <string name="query.googleBooks">Google Books abrufen&#8230;</string>
-    <string name="query.fallback">Buch-Platzhalter erzeugen&#8230;</string>
+    <string name="query.wirServer">Server-Datenbank abrufen&#8230;</string>
     
     <string name="progress.pleaseWait">Bitte warten</string>
     <string name="progress.initial">Bereite Hintergrundaufgabe vor&#8230;</string>
