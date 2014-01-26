@@ -1,13 +1,13 @@
 package com.github.norwae.whatiread;
 
-import android.content.Context;
+import android.app.Activity;
 
 import com.github.norwae.whatiread.data.BookInfo;
 import com.github.norwae.whatiread.data.ISBNStorageProvider;
 
 public class BookSave extends StorageInteraction<BookInfo, String, Void> {
 	
-	public BookSave(Context ctx, AsyncCallbackReceiver<Void, String> callback) {
+	public BookSave(Activity ctx, AsyncCallbackReceiver<Void, String> callback) {
 		super(callback, ctx);
 	}
 

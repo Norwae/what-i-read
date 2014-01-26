@@ -3,7 +3,7 @@ package com.github.norwae.whatiread;
 import java.util.Arrays;
 import java.util.List;
 
-import android.content.Context;
+import android.app.Activity;
 
 import com.github.norwae.whatiread.data.BookInfo;
 import com.github.norwae.whatiread.data.ISBNStorageProvider;
@@ -11,7 +11,7 @@ import com.github.norwae.whatiread.data.ISBNStorageProvider;
 public class BookSearch extends StorageInteraction<String, String, List<BookInfo>>{
 
 	public BookSearch(AsyncCallbackReceiver<List<BookInfo>, String> receiver,
-			Context origin) {
+			Activity origin) {
 		super(receiver, origin);
 	}
 

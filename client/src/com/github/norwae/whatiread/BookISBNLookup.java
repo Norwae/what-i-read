@@ -1,7 +1,7 @@
 package com.github.norwae.whatiread;
 
 
-import android.content.Context;
+import android.app.Activity;
 
 import com.github.norwae.whatiread.data.BookInfo;
 import com.github.norwae.whatiread.data.ISBN13;
@@ -9,7 +9,7 @@ import com.github.norwae.whatiread.data.ISBNStorageProvider;
 
 public class BookISBNLookup extends StorageInteraction<ISBN13, String, BookInfo>{
 	
-	public BookISBNLookup(AsyncCallbackReceiver<BookInfo, String> asyncCallbackReceiver, Context origin) {
+	public BookISBNLookup(AsyncCallbackReceiver<BookInfo, String> asyncCallbackReceiver, Activity origin) {
 		super(asyncCallbackReceiver, origin);
 	}
 

@@ -2,13 +2,13 @@ package com.github.norwae.whatiread.data;
 
 import java.util.List;
 
-import android.content.Context;
+import android.app.Activity;
 
 public interface ISBNStorageProvider {
-	List<BookInfo> searchForTerm(List<String> terms, Context sourceActivity);
-	BookInfo getBookinfo(ISBN13 isbn, Context sourceActivity);
-	boolean storeInfo(BookInfo info, Context sourceActivity);
-	boolean deleteInfo(BookInfo info, Context sourceActivity);
+	List<BookInfo> searchForTerm(List<String> terms, Activity sourceActivity);
+	BookInfo getBookinfo(ISBN13 isbn, Activity sourceActivity);
+	boolean storeInfo(BookInfo info, Activity sourceActivity);
+	boolean deleteInfo(BookInfo info, Activity sourceActivity);
 	
-	String getProgressMessage(Context sourceContext);
+	String getProgressMessage(Activity sourceContext);
 }

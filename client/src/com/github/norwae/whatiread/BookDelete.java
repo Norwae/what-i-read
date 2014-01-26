@@ -1,13 +1,13 @@
 package com.github.norwae.whatiread;
 
-import android.content.Context;
+import android.app.Activity;
 
 import com.github.norwae.whatiread.data.BookInfo;
 import com.github.norwae.whatiread.data.ISBNStorageProvider;
 
 public class BookDelete  extends StorageInteraction<BookInfo, String, Void> {
 
-	protected BookDelete(Context context, AsyncCallbackReceiver<Void, String> receiver) {
+	protected BookDelete(Activity context, AsyncCallbackReceiver<Void, String> receiver) {
 		super(receiver, context);
 	}
 
