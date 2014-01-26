@@ -88,17 +88,17 @@ func serveVolumeBulk(call *Call) (interface{}, error) {
 
 	switch call.Request.Method {
 	case "GET":
-		shelf, err = serveVolumeBulk(call)
+		shelf, err = getVolumeBulk(call)
 	case "PUT":
 		shelf, err = putVolumeBulk(call)
 	default:
-		err = errors.New("Unsupported operation. Only GET, PUT and DELETE methods are allowed")
+		err = errors.New("Unsupported operation. Only GET and PUT methods are allowed")
 	}
 
 	return shelf, err
 }
 
-func serveVolumeBulk(call *Call) (reply *data.LookupReply, err error) {
+func getVolumeBulk(call *Call) (reply *data.LookupReply, err error) {
 	var shelf *data.Bookshelf
 
 	if shelf, err = persistence.LookupBookshelf(call.Context); err == nil {
@@ -150,12 +150,32 @@ func serveVolumeSingle(call *Call) (interface{}, error) {
 			book, err = compositeISBNLookup(call.Context, call.DetermineCountry(), isbn)
 		case "PUT":
 			book, err = putVolumeSingle(call, isbn)
+		case "DELETE":
+			book, err = deleteVolumeSingle(call, isbn)
 		default:
 			err = errors.New("Unsupported operation. Only GET, PUT and DELETE methods are allowed")
 		}
 	}
 
 	return book, err
+}
+
+func deleteVolumeSingle(call *Call, isbn isbn13.ISBN13) (info *data.BookMetaData, err error) {
+	err = persistence.UpdateBookshelf(call.Context, func(_ ae.Context, shelf *data.Bookshelf) error {
+		for i := range shelf.Books {
+			if ptr := &shelf.Books[i]; ptr.ISBN == isbn.String() {
+				book := *ptr
+				info = &book
+				shelf.Books = append(shelf.Books[:i], shelf.Books[i+1:]...)
+
+				return nil
+			}
+
+		}
+		return errors.New("ISBN not found")
+	})
+
+	return
 }
 
 func putVolumeSingle(call *Call, isbn isbn13.ISBN13) (info *data.BookMetaData, err error) {
