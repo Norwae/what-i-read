@@ -6,7 +6,6 @@ import (
 	mc "appengine/memcache"
 	"appengine/user"
 	"data"
-	"time"
 )
 
 const kindBookshelf = "bookshelf"
@@ -25,6 +24,7 @@ func updateBookshelf(f func(*Transaction, *data.Bookshelf) error) func(ae.Contex
 		if shelf, err := LookupBookshelf(ctx); err == nil {
 			if err = f(&tx, shelf); err == nil {
 				err = commitTransaction(&tx)
+				storeBookshelfMemcache(ctx, user.Current(ctx).ID, shelf)
 			}
 
 			return err
@@ -84,12 +84,12 @@ func StoreBookshelf(ctx ae.Context, shelf *data.Bookshelf) error {
 
 func storeBookshelfMemcache(ctx ae.Context, uid string, shelf *data.Bookshelf) {
 	item := mc.Item{
-		Key:        uid,
-		Object:     shelf,
-		Expiration: 15 * time.Minute,
+		Key:    uid,
+		Object: shelf,
 	}
 
-	mc.Gob.Set(ctx, &item)
+	err := mc.Gob.Set(ctx, &item)
+	ctx.Infof("Set memcache shelf instance with result %v", err)
 }
 
 func storeBookshelfDatastore(ctx ae.Context, uid string, shelf *data.Bookshelf) (err error) {
@@ -187,10 +187,16 @@ func lookupShelfMemcache(ctx ae.Context, key string) (resp *data.Bookshelf, err 
 func LookupBookshelf(ctx ae.Context) (*data.Bookshelf, error) {
 	user := user.Current(ctx).ID
 
-	if shelf, err := lookupShelfMemcache(ctx, user); err == nil {
+	shelf, err := lookupShelfMemcache(ctx, user)
+
+	if err == nil {
 		ctx.Debugf("Found shelf for %v in Memcache", user)
 		return shelf, err
+	} else {
+		if shelf, err = lookupShelfDatastore(ctx, user); err == nil {
+			storeBookshelfMemcache(ctx, user, shelf)
+		}
 	}
 
-	return lookupShelfDatastore(ctx, user)
+	return shelf, err
 }
