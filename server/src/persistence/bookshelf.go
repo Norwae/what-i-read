@@ -11,26 +11,64 @@ import (
 
 const kindBookshelf = "bookshelf"
 
-func UpdateBookshelf(ctx ae.Context, f func(ae.Context, *data.Bookshelf) error) error {
+func UpdateBookshelf(ctx ae.Context, f func(*Transaction, *data.Bookshelf) error) error {
 	return ds.RunInTransaction(ctx, updateBookshelf(f), nil)
 }
 
-func updateBookshelf(f func(ae.Context, *data.Bookshelf) error) func(ae.Context) error {
+func updateBookshelf(f func(*Transaction, *data.Bookshelf) error) func(ae.Context) error {
 	return func(ctx ae.Context) error {
 		ctx.Debugf("Beginning shelf update transaction")
-		uid := user.Current(ctx).ID
-		shelf, err := lookupShelfDatastore(ctx, uid)
-
-		if err == nil {
-			if err = f(ctx, shelf); err == nil {
-				err = StoreBookshelf(ctx, shelf)
-			}
-		} else {
-			ctx.Errorf("Error reading bookshelf: %v", err)
+		tx := Transaction{
+			Context: ctx,
 		}
 
-		return err
+		if shelf, err := LookupBookshelf(ctx); err == nil {
+			if err = f(&tx, shelf); err == nil {
+				err = commitTransaction(&tx)
+			}
+
+			return err
+		} else {
+			ctx.Errorf("Error reading bookshelf: %v", err)
+
+			return err
+		}
 	}
+}
+
+func keys(ctx ae.Context, uid, kind string, elems []data.KeyStringer, ancestor *ds.Key) []*ds.Key {
+	result := make([]*ds.Key, len(elems))
+
+	for i := range elems {
+		result[i] = ds.NewKey(ctx, kind, elems[i].KeyString(uid), 0, ancestor)
+	}
+
+	return result
+}
+
+func commitTransaction(tx *Transaction) error {
+	var multi []error
+	ctx := tx.Context
+	uid := user.Current(ctx).ID
+	ancestor := ds.NewKey(ctx, kindBookshelf, uid, 0, nil)
+
+	if len(tx.Delete) > 0 {
+		if e2 := ds.DeleteMulti(ctx, keys(ctx, uid, kindBookInfo, tx.Delete, ancestor)); e2 != nil {
+			multi = append(multi, e2)
+		}
+	}
+
+	if len(tx.Put) > 0 {
+		if _, e2 := ds.PutMulti(ctx, keys(ctx, uid, kindBookInfo, tx.Put, ancestor), tx.Put); e2 != nil {
+			multi = append(multi, e2)
+		}
+	}
+
+	if multi != nil {
+		return ae.MultiError(multi)
+	}
+
+	return nil
 }
 
 func StoreBookshelf(ctx ae.Context, shelf *data.Bookshelf) error {
@@ -56,58 +94,43 @@ func storeBookshelfMemcache(ctx ae.Context, uid string, shelf *data.Bookshelf) {
 
 func storeBookshelfDatastore(ctx ae.Context, uid string, shelf *data.Bookshelf) (err error) {
 	ancestor := ds.NewKey(ctx, kindBookshelf, uid, 0, nil)
-	query := ds.NewQuery(kindBookInfo).Ancestor(ancestor)
 
-	currentElements := make(map[string]*data.BookMetaData)
+	var del, put []*ds.Key = nil, make([]*ds.Key, len(shelf.Books))
 
 	for i := range shelf.Books {
-		next := &shelf.Books[i]
-		currentElements[next.ISBN] = next
+		key := ds.NewKey(ctx, kindBookInfo, shelf.Books[i].KeyString(uid), 0, ancestor)
+		put[i] = key
 	}
 
-	ctx.Debugf("Build isbn -> value map: %v", currentElements)
-
-	var target data.BookMetaData
 	var key *ds.Key
-
-	var delKeys, putKeys []*ds.Key
-	var putVals []*data.BookMetaData
-
+	query := ds.NewQuery(kindBookInfo).Ancestor(ancestor).KeysOnly()
 	it := query.Run(ctx)
-	
-	for key, err = it.Next(&target); err == nil; key, err = it.Next(&target) {
-		ctx.Debugf("Evaluating old element %v", target)
-		if updated, ok := currentElements[target.ISBN]; ok {
-			putKeys = append(putKeys, key)
-			putVals = append(putVals, updated)
-			delete(currentElements, target.ISBN)
 
-			ctx.Debugf("Updating element %v (%v)", target.ISBN, key)
-		} else {
-			delKeys = append(delKeys, key)
-
-			ctx.Debugf("Deleting element %v (%v)", target.ISBN, key)
+	for key, err = it.Next(nil); err == nil; key, err = it.Next(nil) {
+		usePut := false
+		for _, ptr := range put {
+			if key.Equal(ptr) {
+				usePut = true
+				break
+			}
 		}
-	}
 
-	for _, val := range currentElements {
-		putKeys = append(putKeys, ds.NewIncompleteKey(ctx, kindBookInfo, ancestor))
-		putVals = append(putVals, val)
-
-		ctx.Debugf("Putting new value %v", val)
+		if !usePut {
+			del = append(del, key)
+		}
 	}
 
 	if err == ds.Done {
 		me := make([]error, 0, 2)
 
-		ctx.Infof("Updating bookshelf for %v, Requests: %d put, %d delete", uid, len(putKeys), len(delKeys))
+		ctx.Infof("Updating bookshelf for %v, Requests: %d put, %d delete", uid, len(put), len(del))
 
-		if _, e2 := ds.PutMulti(ctx, putKeys, putVals); e2 != nil {
+		if _, e2 := ds.PutMulti(ctx, put, shelf.Books); e2 != nil {
 			ctx.Errorf("Put failed: %v", e2)
 			me = append(me, e2)
 		}
 
-		if e2 := ds.DeleteMulti(ctx, delKeys); e2 != nil {
+		if e2 := ds.DeleteMulti(ctx, del); e2 != nil {
 			ctx.Errorf("Delete failed: %v", e2)
 			me = append(me, e2)
 		}
@@ -117,10 +140,9 @@ func storeBookshelfDatastore(ctx ae.Context, uid string, shelf *data.Bookshelf) 
 		} else {
 			err = nil
 		}
-		
-		
+
 	}
-	
+
 	return
 }
 

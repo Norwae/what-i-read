@@ -162,13 +162,10 @@ func serveVolumeSingle(call *Call) (interface{}, error) {
 
 func deleteVolumeSingle(call *Call, isbn isbn13.ISBN13) (info *data.BookMetaData, err error) {
 	call.Context.Infof("Deleting ISBN %d", isbn)
-	err = persistence.UpdateBookshelf(call.Context, func(_ ae.Context, shelf *data.Bookshelf) error {
+	err = persistence.UpdateBookshelf(call.Context, func(tx *persistence.Transaction, shelf *data.Bookshelf) error {
 		for i := range shelf.Books {
 			if ptr := &shelf.Books[i]; ptr.ISBN == isbn.String() {
-				book := *ptr
-				info = &book
-				shelf.Books = append(shelf.Books[:i], shelf.Books[i+1:]...)
-
+				tx.Delete = []data.KeyStringer{ptr}
 				return nil
 			}
 
@@ -189,12 +186,14 @@ func putVolumeSingle(call *Call, isbn isbn13.ISBN13) (info *data.BookMetaData, e
 		normalize(call, info)
 		call.Context.Debugf("Normalized decoded entity: %v", info)
 
-		persistence.UpdateBookshelf(call.Context, func(_ ae.Context, shelf *data.Bookshelf) error {
+		persistence.UpdateBookshelf(call.Context, func(tx *persistence.Transaction, shelf *data.Bookshelf) error {
 
 			if ptr := shelf.LookupInfo(isbn); ptr != nil {
 				*ptr = *info
+				tx.Put = []data.KeyStringer{ptr}
 			} else {
 				shelf.Books = append(shelf.Books, *info)
+				tx.Put = []data.KeyStringer{info}
 			}
 
 			return nil

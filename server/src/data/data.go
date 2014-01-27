@@ -1,5 +1,9 @@
 package data
 
+type KeyStringer interface {
+	KeyString(string) string
+}
+
 type VolumeInfo struct {
 	Title       string     `json:"title"`
 	Subtitle    string     `json:"subtitle,omitempty"`

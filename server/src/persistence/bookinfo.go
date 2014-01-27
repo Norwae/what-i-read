@@ -6,14 +6,13 @@ import (
 	mc "appengine/memcache"
 	"data"
 	"isbn13"
-	"strings"
 	"sync"
 )
 
 const kindBookInfo = "book"
 
 func LookupISBN(ctx ae.Context, country string, isbn isbn13.ISBN13) (*data.BookMetaData, error) {
-	keyString := key(country, isbn)
+	keyString := isbn.KeyString(country)
 	if result, err := lookupISBNMemcache(ctx, keyString); err == nil {
 		return result, err
 	}
@@ -60,7 +59,7 @@ func putISBNResult(ctx ae.Context, keyStr string, data *data.BookMetaData) {
 }
 
 func StoreISBNResult(ctx ae.Context, country string, isbn isbn13.ISBN13, book *data.BookMetaData) {
-	keyStr := key(country, isbn)
+	keyStr := isbn.KeyString(country)
 
 	var group sync.WaitGroup
 	group.Add(2)
@@ -74,8 +73,4 @@ func StoreISBNResult(ctx ae.Context, country string, isbn isbn13.ISBN13, book *d
 	go wrap(putISBNResult)
 
 	group.Wait()
-}
-
-func key(country string, isbn isbn13.ISBN13) string {
-	return strings.Join([]string{country, isbn.String()}, ":")
 }
