@@ -1,23 +1,16 @@
 package com.github.norwae.whatiread.server;
 
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.CookieHandler;
 import java.net.CookieManager;
-import java.net.CookieStore;
-import java.net.HttpCookie;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.List;
 
-import org.apache.http.client.methods.HttpDelete;
 import org.json.JSONException;
 
 import android.accounts.Account;
@@ -53,10 +46,9 @@ public class ServerStorage implements ISBNStorageProvider {
 	@Override
 	public BookInfo getBookinfo(ISBN13 isbn, Activity sourceActivity) {
 		try {
-			HttpURLConnection get = (HttpURLConnection) new URL(WIR_VOLUMES_URL
-					+ "/" + isbn.toString()).openConnection();
 
-			String json = execute(get, sourceActivity, null);
+			String json = execute(WIR_VOLUMES_URL + "/" + isbn.toString(),
+					"GET", sourceActivity, null);
 			if (json != null) {
 				BookInfo result = new BookInfo();
 				try {
@@ -76,35 +68,72 @@ public class ServerStorage implements ISBNStorageProvider {
 		return null;
 	}
 
-	private String execute(HttpURLConnection request, Activity source,
+	private String execute(String requestURL, String method, Activity source,
 			byte[] entity) throws IOException {
+		for (int retry = 0; retry < 3; retry++) {
+			try {
+				HttpURLConnection request = (HttpURLConnection) new URL(
+						requestURL).openConnection();
+				request.setRequestMethod(method);
 
-		try {
-			initAuthCookie(source);
+				switch (retry) {
+				case 2:
+					resetAuthorization(source);
+					// fall-through ok
+				case 1:
+					initAuthCookie(source);
+				}
 
-			if (entity != null) {
-				request.setFixedLengthStreamingMode(entity.length);
-				request.setDoInput(true);
-				IO.copy(request.getOutputStream(), new ByteArrayInputStream(
-						entity));
+				if (entity != null) {
+					request.setFixedLengthStreamingMode(entity.length);
+					request.setDoInput(true);
+					IO.copy(request.getOutputStream(),
+							new ByteArrayInputStream(entity));
+				}
+
+				if (request.getResponseCode() == HttpURLConnection.HTTP_OK) {
+					String contentEncoding = request.getContentEncoding();
+					String reply = new String(
+							IO.read(request.getInputStream()),
+							contentEncoding != null ? contentEncoding : "UTF-8");
+
+					if (reply != null && reply.trim().startsWith("<")) {
+						continue;
+					}
+
+					if (reply != null) {
+						return reply;
+					}
+				} else {
+					Log.e(TAG,
+							"call " + request + " failed with "
+									+ request.getResponseCode());
+					break;
+				}
+			} catch (OperationCanceledException e) {
+				Log.e(TAG, "Authentication cancelled", e);
+			} catch (AuthenticatorException e) {
+				Log.e(TAG, "Could not log in", e);
 			}
-
-			if (request.getResponseCode() == HttpURLConnection.HTTP_OK) {
-				String contentEncoding = request.getContentEncoding();
-				return new String(IO.read(request.getInputStream()),
-						contentEncoding != null ? contentEncoding : "UTF-8");
-
-			} else {
-				Log.e(TAG,
-						"call " + request + " failed with "
-								+ request.getResponseCode());
-			}
-		} catch (OperationCanceledException e) {
-			Log.e(TAG, "Authentication cancelled", e);
-		} catch (AuthenticatorException e) {
-			Log.e(TAG, "Could not log in", e);
 		}
 		return null;
+	}
+
+	private void resetAuthorization(Activity source)
+			throws OperationCanceledException, AuthenticatorException,
+			IOException {
+		AccountManager accountManager = AccountManager.get(source);
+		Account[] accounts = accountManager.getAccountsByType("com.google");
+
+		if (accounts.length == 0) {
+			return;
+		}
+
+		Account account = accounts[0];
+
+		accountManager.invalidateAuthToken(account.type,
+				buildToken(source, accountManager, account));
+
 	}
 
 	private void initAuthCookie(Activity source)
@@ -121,16 +150,16 @@ public class ServerStorage implements ISBNStorageProvider {
 		Account account = accounts[0];
 		String authToken = buildToken(source, accountManager, account);
 
-		accountManager.invalidateAuthToken(account.type, authToken);
-		authToken = buildToken(source, accountManager, account);
-
 		HttpURLConnection tempGet = (HttpURLConnection) new URL(WIR_SERVER_URL
 				+ "_ah/login?continue=http://localhost/&auth="
 				+ URLEncoder.encode(authToken)).openConnection();
-		
+
 		int responseCode = tempGet.getResponseCode();
-		if (responseCode != HttpURLConnection.HTTP_OK && responseCode != HttpURLConnection.HTTP_MOVED_TEMP) {
-			throw new  AuthenticatorException("Could not exchange token for cookie, code: " + responseCode);
+		if (responseCode != HttpURLConnection.HTTP_OK
+				&& responseCode != HttpURLConnection.HTTP_MOVED_TEMP) {
+			throw new AuthenticatorException(
+					"Could not exchange token for cookie, code: "
+							+ responseCode);
 		}
 	}
 
@@ -156,10 +185,7 @@ public class ServerStorage implements ISBNStorageProvider {
 		}
 
 		try {
-			HttpURLConnection get = (HttpURLConnection) new URL(url.toString())
-					.openConnection();
-
-			String json = execute(get, sourceActivity, null);
+			String json = execute(url.toString(), "GET", sourceActivity, null);
 
 			if (json != null) {
 				try {
@@ -182,11 +208,9 @@ public class ServerStorage implements ISBNStorageProvider {
 	public boolean storeInfo(BookInfo info, Activity sourceActivity) {
 		try {
 			byte[] json = info.quoteJSON().getBytes("UTF-8");
-			HttpURLConnection put = (HttpURLConnection) new URL(WIR_VOLUMES_URL
-					+ "/" + info.getIsbn()).openConnection();
-			put.setRequestMethod("PUT");
 
-			String reply = execute(put, sourceActivity, json);
+			String reply = execute(WIR_VOLUMES_URL + "/" + info.getIsbn(),
+					"PUT", sourceActivity, json);
 			return reply != null;
 		} catch (UnsupportedEncodingException e) {
 			Log.wtf(TAG, "UTF-8 Unsupported? Unpossible!?!", e);
@@ -201,14 +225,9 @@ public class ServerStorage implements ISBNStorageProvider {
 
 	@Override
 	public boolean deleteInfo(BookInfo info, Activity sourceActivity) {
-		HttpURLConnection delete;
 		try {
-			delete = (HttpURLConnection) new URL(WIR_VOLUMES_URL + "/"
-					+ info.getIsbn()).openConnection();
-
-			delete.setRequestMethod("DELETE");
-
-			String reply = execute(delete, sourceActivity, null);
+			String reply = execute(WIR_VOLUMES_URL + "/" + info.getIsbn(),
+					"DELETE", sourceActivity, null);
 			return reply != null;
 		} catch (IOException e) {
 			Log.e(TAG, "IO Error", e);
@@ -216,5 +235,4 @@ public class ServerStorage implements ISBNStorageProvider {
 
 		return false;
 	}
-
 }
