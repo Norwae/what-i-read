@@ -76,6 +76,7 @@ func storeBookshelfDatastore(ctx ae.Context, uid string, shelf *data.Bookshelf) 
 	it := query.Run(ctx)
 	_, err = it.Next(&target)
 	for ; err == nil; _, err = it.Next(&target) {
+		ctx.Debugf("Evaluating old element %v", target)
 		if updated, ok := currentElements[target.ISBN]; ok {
 			putKeys = append(putKeys, key)
 			putVals = append(putVals, updated)
@@ -90,7 +91,7 @@ func storeBookshelfDatastore(ctx ae.Context, uid string, shelf *data.Bookshelf) 
 	}
 
 	for _, val := range currentElements {
-		putKeys = append(putKeys, ds.NewIncompleteKey(ctx, kindBookshelf, ancestor))
+		putKeys = append(putKeys, ds.NewIncompleteKey(ctx, kindBookInfo, ancestor))
 		putVals = append(putVals, val)
 
 		ctx.Debugf("Putting new value %v", val)

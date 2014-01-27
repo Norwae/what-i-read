@@ -208,14 +208,15 @@ func normalize(call *Call, info *data.BookMetaData) {
 	var err error
 	if isbn, err = isbn13.New(info.ISBN); err == nil {
 		var base *data.BookMetaData
-		if base, err = compositeISBNLookup(call.Context, call.DetermineCountry(), isbn); err == nil {
+		if base, err = persistence.LookupISBN(call.Context, call.DetermineCountry(), isbn); err == nil {
 			info.Volume.Images = base.Volume.Images
 			return
 		} else {
 			info.Volume.Images = data.ImageLinks{}
 		}
+	} else {
+		call.Context.Errorf("Could not normalize data for %s: %s", info.ISBN, err.Error())
 	}
-	call.Context.Errorf("Could not normalize data for %s: %s", info.ISBN, err.Error())
 }
 
 func compositeISBNLookup(ctx ae.Context, country string, isbn isbn13.ISBN13) (resp *data.BookMetaData, err error) {
