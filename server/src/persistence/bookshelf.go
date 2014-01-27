@@ -17,6 +17,7 @@ func UpdateBookshelf(ctx ae.Context, f func(ae.Context, *data.Bookshelf) error) 
 
 func updateBookshelf(f func(ae.Context, *data.Bookshelf) error) func(ae.Context) error {
 	return func(ctx ae.Context) error {
+		ctx.Debugf("Beginning shelf update transaction")
 		uid := user.Current(ctx).ID
 		shelf, err := lookupShelfDatastore(ctx, uid)
 
@@ -24,6 +25,8 @@ func updateBookshelf(f func(ae.Context, *data.Bookshelf) error) func(ae.Context)
 			if err = f(ctx, shelf); err == nil {
 				err = StoreBookshelf(ctx, shelf)
 			}
+		} else {
+			ctx.Errorf("Error reading bookshelf: %v", err)
 		}
 
 		return err
