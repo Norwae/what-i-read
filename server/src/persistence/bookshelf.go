@@ -21,7 +21,7 @@ func updateBookshelf(f func(ae.Context, *data.Bookshelf) error) func(ae.Context)
 		uid := user.Current(ctx).ID
 		shelf, err := lookupShelfDatastore(ctx, uid)
 
-		if err != nil {
+		if err == nil {
 			if err = f(ctx, shelf); err == nil {
 				err = StoreBookshelf(ctx, shelf)
 			}
@@ -51,7 +51,7 @@ func storeBookshelfMemcache(ctx ae.Context, uid string, shelf *data.Bookshelf) {
 		Expiration: 15 * time.Minute,
 	}
 
-	mc.Gob.Add(ctx, &item)
+	mc.Gob.Set(ctx, &item)
 }
 
 func storeBookshelfDatastore(ctx ae.Context, uid string, shelf *data.Bookshelf) (err error) {

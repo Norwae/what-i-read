@@ -180,11 +180,14 @@ func deleteVolumeSingle(call *Call, isbn isbn13.ISBN13) (info *data.BookMetaData
 }
 
 func putVolumeSingle(call *Call, isbn isbn13.ISBN13) (info *data.BookMetaData, err error) {
+	call.Context.Debugf("Updating %d", isbn)
 	decode := json.NewDecoder(call.Request.Body)
 	info = new(data.BookMetaData)
 	if err = decode.Decode(info); err == nil {
+		call.Context.Debugf("Raw decoded entity: %v", info)
 		info.ISBN = isbn.String()
 		normalize(call, info)
+		call.Context.Debugf("Normalized decoded entity: %v", info)
 
 		persistence.UpdateBookshelf(call.Context, func(_ ae.Context, shelf *data.Bookshelf) error {
 
