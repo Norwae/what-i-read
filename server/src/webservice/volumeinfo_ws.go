@@ -161,6 +161,7 @@ func serveVolumeSingle(call *Call) (interface{}, error) {
 }
 
 func deleteVolumeSingle(call *Call, isbn isbn13.ISBN13) (info *data.BookMetaData, err error) {
+	call.Context.Infof("Deleting ISBN %d", isbn)
 	err = persistence.UpdateBookshelf(call.Context, func(_ ae.Context, shelf *data.Bookshelf) error {
 		for i := range shelf.Books {
 			if ptr := &shelf.Books[i]; ptr.ISBN == isbn.String() {

@@ -62,29 +62,41 @@ func storeBookshelfDatastore(ctx ae.Context, uid string, shelf *data.Bookshelf) 
 		currentElements[next.ISBN] = next
 	}
 
+	ctx.Debugf("Build isbn -> value map: %v", currentElements)
+
 	var target data.BookMetaData
 	var key *ds.Key
 
 	var delKeys, putKeys []*ds.Key
 	var putVals []*data.BookMetaData
 
-	for it := query.Run(ctx); err == nil; key, err = it.Next(&target) {
+	it := query.Run(ctx)
+	_, err = it.Next(&target)
+	for ; err == nil; _, err = it.Next(&target) {
 		if updated, ok := currentElements[target.ISBN]; ok {
 			putKeys = append(putKeys, key)
 			putVals = append(putVals, updated)
 			delete(currentElements, target.ISBN)
+
+			ctx.Debugf("Updating element %v", target.ISBN)
 		} else {
 			delKeys = append(delKeys, key)
+
+			ctx.Debugf("Deleting element %v", target.ISBN)
 		}
 	}
 
 	for _, val := range currentElements {
 		putKeys = append(putKeys, ds.NewIncompleteKey(ctx, kindBookshelf, ancestor))
 		putVals = append(putVals, val)
+
+		ctx.Debugf("Putting new value %v", val)
 	}
 
 	if err == ds.Done {
 		me := make([]error, 0, 2)
+
+		ctx.Infof("Updating bookshelf for %v, Requests: %d put, %d delete", uid, len(putKeys), len(delKeys))
 
 		if _, e2 := ds.PutMulti(ctx, putKeys, putVals); e2 != nil {
 			me = append(me, e2)
@@ -114,9 +126,14 @@ func lookupShelfDatastore(ctx ae.Context, user string) (shelf *data.Bookshelf, e
 
 	shelf = new(data.Bookshelf)
 
-	for it := query.Run(ctx); err == nil; _, err = it.Next(&target) {
+	it := query.Run(ctx)
+	_, err = it.Next(&target)
+	for ; err == nil; _, err = it.Next(&target) {
+		ctx.Infof("Found item %v", &target)
 		shelf.Books = append(shelf.Books, target)
 	}
+
+	ctx.Infof("Found %d items in datastore for key %v (%v)", len(shelf.Books), ancestor, err)
 
 	if err == ds.Done {
 		err = nil
@@ -141,6 +158,7 @@ func LookupBookshelf(ctx ae.Context) (*data.Bookshelf, error) {
 	user := user.Current(ctx).ID
 
 	if shelf, err := lookupShelfMemcache(ctx, user); err == nil {
+		ctx.Debugf("Found shelf for %v in Memcache", user)
 		return shelf, err
 	}
 
