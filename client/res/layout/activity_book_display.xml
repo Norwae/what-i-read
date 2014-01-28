@@ -3,57 +3,108 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
-    <TableLayout android:id="@+id/header_table"
+    <TableLayout
+        android:id="@+id/header_table"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" >
 
         <TableRow
-            android:id="@+id/tableRow1"
+            android:id="@+id/titleRow"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" >
-			
-		    <TextView
-	    	    android:id="@+id/titleLabel"
-		        android:text="@string/title" />
-		    <EditText android:id="@+id/title" android:inputType="text"/>
-    
+
+            <TextView
+                android:id="@+id/titleLabel"
+                android:text="@string/title" />
+
+            <EditText
+                android:id="@+id/title"
+                android:inputType="text" />
         </TableRow>
 
         <TableRow
-            android:id="@+id/tableRow2"
+            android:id="@+id/subtitleRow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:id="@+id/subtitleLabel"
+                android:text="@string/subtitle" />
+
+            <EditText
+                android:id="@+id/subtitle"
+                android:inputType="text" />
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/seriesRow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:id="@+id/seriesLabel"
+                android:text="@string/series" />
+
+            <EditText
+                android:id="@+id/series"
+                android:inputType="text" />
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/pageCountRow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:id="@+id/pageCountLabel"
+                android:text="@string/pageCount" />
+
+            <EditText
+                android:id="@+id/pageCount"
+                android:inputType="text" />
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/publisherRow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:id="@+id/publisherLabel"
+                android:text="@string/publisher" />
+
+            <EditText
+                android:id="@+id/publisher"
+                android:inputType="text" />
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/authorRow"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" >
 
             <TextView
                 android:id="@+id/authorLabel"
                 android:text="@string/author" />
-   			
-   			<EditText android:id="@+id/author" android:inputType="text"/>
+
+            <EditText
+                android:id="@+id/author"
+                android:inputType="text" />
         </TableRow>
 
         <TableRow
-            android:id="@+id/tableRow3"
+            android:id="@+id/isbnRow"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" >
-   			  <TextView
-        			android:id="@+id/isbnLabel"
-        			android:text="@string/isbn" />
-   			  
-   			  <TextView
-        			android:id="@+id/isbn"/>
-   		</TableRow>
 
+            <TextView
+                android:id="@+id/isbnLabel"
+                android:text="@string/isbn" />
+
+            <TextView android:id="@+id/isbn" />
+        </TableRow>
     </TableLayout>
-    
-    
 
-    <ImageView
-        android:id="@+id/coverImage"
-        android:contentDescription="@string/coverImage"
-        android:layout_toRightOf="@id/header_table"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
-	
     <EditText
         android:id="@+id/comment"
         android:layout_width="wrap_content"
@@ -84,5 +135,14 @@
         android:layout_alignBottom="@+id/save"
         android:layout_toRightOf="@+id/save"
         android:text="@string/action_delete" />
+
+    <ImageView
+        android:id="@+id/coverImage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:contentDescription="@string/coverImage"
+        android:src="@drawable/no_cover" />
 
 </RelativeLayout>

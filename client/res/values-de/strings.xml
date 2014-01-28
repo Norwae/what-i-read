@@ -24,10 +24,13 @@
     <string name="title">Titel</string>
     <string name="author">Autor</string>
     <string name="isbn">ISBN-13</string>
-    <string name="comment">Kommentar</string>
-    <string name="rating">Bewertung</string>
-    <string name="firstRead">Erstes mal gelesen</string>
-   
+    <string name="comment">Kommentar</string>    
+    <string name="subtitle">Untertitel</string>
+    <string name="series">Reihe</string>
+    <string name="publisher">Verlag</string>
+    <string name="description">Beschreibung</string>
+    <string name="pageCount"># Pages</string>
+    
     <string name="coverImage">Cover</string>
     
     <string name="alert.alreadyKnown">Du hast dieses Buch schon gelesen</string>

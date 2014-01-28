@@ -1,14 +1,19 @@
 package com.github.norwae.whatiread;
 
+import java.net.URI;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.github.norwae.whatiread.data.BookInfo;
@@ -136,21 +141,26 @@ public class DisplayBookActivity extends Activity {
 		CharSequence text = input.getText();
 		return text != null ? text.toString() : null;
 	}
+	
+	private void initTextField(CharSequence value, int id) {
+		TextView view = (TextView) findViewById(id);
+		view.setText(value);
+	}
 
 	private void initViewFields() {
-
-		TextView textField = (TextView) findViewById(R.id.author);
-		textField.setText(Strings.join(", ",
-				info.getAuthors()));
-
-		textField = (TextView) findViewById(R.id.title);
-		textField.setText(info.getTitle());
-
-		textField = (TextView) findViewById(R.id.isbn);
-		textField.setText(info.getIsbn());
-
-		textField = (TextView) findViewById(R.id.comment);
-		textField.setText(info.getComment());
+		initTextField(Strings.join(", ", info.getAuthors()), R.id.author);
+		initTextField(info.getTitle(), R.id.title);
+		initTextField(info.getSubtitle(), R.id.subtitle);
+		initTextField(info.getSeries(), R.id.series);
+		initTextField(info.getPublisher(), R.id.publisher);
+		initTextField(info.getPageCount() == 0 ? null : "" + info.getPageCount(), R.id.pageCount);
+		initTextField(info.getIsbn(), R.id.isbn);
+		initTextField(info.getComment(), R.id.comment);
+//		
+//		if (info.getThumbnailSmall() != null) {
+//			ImageView image = (ImageView) findViewById(R.id.coverImage);
+//			image.setImageURI(Uri.parse(info.getThumbnailSmall().toString()));
+//		}
 	}
 
 	@Override
