@@ -7,6 +7,9 @@ public class Strings {
 	
 
 	public static CharSequence join(String sep, List<String> strings) {
+		if (strings == null) {
+			return "";
+		}
 		return join(sep, strings.toArray(new String[strings.size()]));
 	}
 	

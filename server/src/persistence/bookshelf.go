@@ -161,6 +161,9 @@ func lookupShelfDatastore(ctx ae.Context, user string) (shelf *data.Bookshelf, e
 	for ; err == nil; _, err = it.Next(&target) {
 		ctx.Infof("Found item %v", &target)
 		shelf.Books = append(shelf.Books, target)
+		target = data.BookMetaData{
+			Known: true,
+		}
 	}
 
 	ctx.Infof("Found %d items in datastore for key %v (%v)", len(shelf.Books), ancestor, err)
@@ -190,7 +193,7 @@ func LookupBookshelf(ctx ae.Context) (*data.Bookshelf, error) {
 	shelf, err := lookupShelfMemcache(ctx, user)
 
 	if err == nil {
-		ctx.Debugf("Found shelf for %v in Memcache", user)
+		ctx.Debugf("Found shelf for %v in Memcache (%v)", user, shelf)
 		return shelf, err
 	} else {
 		if shelf, err = lookupShelfDatastore(ctx, user); err == nil {

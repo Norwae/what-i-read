@@ -108,13 +108,13 @@ public class BookInfo implements Serializable {
 
 		obj = obj.optJSONObject("imageLinks");
 		if (obj != null) {
-			String url = obj.getString("thumbnail");
+			String url = obj.optString("thumbnail");
 
 			if (url != null && !url.isEmpty()) {
 				thumbnail = new URI(url);
 			}
 
-			url = obj.getString("smallThumbnail");
+			url = obj.optString("smallThumbnail");
 
 			if (url != null && !url.isEmpty()) {
 				thumbnailSmall = new URI(url);

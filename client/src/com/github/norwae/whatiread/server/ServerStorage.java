@@ -102,6 +102,7 @@ public class ServerStorage implements ISBNStorageProvider {
 					}
 
 					if (reply != null) {
+						Log.d(TAG, "Received server response: " + reply);
 						return reply;
 					}
 				} else {

@@ -73,6 +73,7 @@ func (function CallHandler) ServeHTTP(w http.ResponseWriter, rq *http.Request) {
 			"errors": errors,
 		})
 	} else {
+		call.Context.Debugf("Returning %v to client", result)
 		encoder.Encode(result)
 	}
 }
@@ -102,13 +103,17 @@ func getVolumeBulk(call *Call) (reply *data.LookupReply, err error) {
 	var shelf *data.Bookshelf
 
 	if shelf, err = persistence.LookupBookshelf(call.Context); err == nil {
+		call.Context.Debugf("Bookshelf contains %d volumes", len(shelf.Books))
+		
 		for _, str := range call.Request.URL.Query()["search"] {
 			matches := shelf.Search(str)
 
-			shelf := &data.Bookshelf{make([]data.BookMetaData, len(matches))}
+			shelf = &data.Bookshelf{make([]data.BookMetaData, len(matches))}
 			for i, ptr := range matches {
 				shelf.Books[i] = *ptr
 			}
+			
+			call.Context.Debugf("Filtered by \"%s\", down to %d entries: %v", str, len(shelf.Books), shelf.Books)
 		}
 
 		reply = &data.LookupReply{
