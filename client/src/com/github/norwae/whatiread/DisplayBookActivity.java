@@ -1,19 +1,14 @@
 package com.github.norwae.whatiread;
 
-import java.net.URI;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
-import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.github.norwae.whatiread.data.BookInfo;
