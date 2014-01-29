@@ -138,8 +138,8 @@
 
     <ImageView
         android:id="@+id/coverImage"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="50dp"
+        android:layout_height="78dp"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
         android:contentDescription="@string/coverImage"

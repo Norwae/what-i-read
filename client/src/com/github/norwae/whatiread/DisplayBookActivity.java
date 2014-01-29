@@ -156,11 +156,10 @@ public class DisplayBookActivity extends Activity {
 		initTextField(info.getPageCount() == 0 ? null : "" + info.getPageCount(), R.id.pageCount);
 		initTextField(info.getIsbn(), R.id.isbn);
 		initTextField(info.getComment(), R.id.comment);
-//		
-//		if (info.getThumbnailSmall() != null) {
-//			ImageView image = (ImageView) findViewById(R.id.coverImage);
-//			image.setImageURI(Uri.parse(info.getThumbnailSmall().toString()));
-//		}
+		
+		if (info.getThumbnailSmall() != null) {
+			new ImageFetch(this, R.id.coverImage).execute(info.getThumbnailSmall());
+		}
 	}
 
 	@Override
