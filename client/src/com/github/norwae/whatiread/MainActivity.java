@@ -56,6 +56,7 @@ public class MainActivity extends FragmentActivity {
 	private ViewPager viewPager;
 	private PageAdapter pageAdapter;
 	private ActionBar actionBar;
+	private MainMenuHandler menuHandler = new MainMenuHandler();	
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -131,22 +132,8 @@ public class MainActivity extends FragmentActivity {
 	}
 
 	@Override
-	public boolean onMenuItemSelected(int featureId, MenuItem item) {
-		if (item.getItemId() == R.id.action_about) {
-			new AlertDialog.Builder(MainActivity.this)
-					.setMessage(R.string.alpha)
-					.setNeutralButton(R.string.action_ok, null).show();
-
-			return true;
-		}
-		
-		if (item.getItemId() == R.id.action_settings) {
-			Intent call = new Intent(this, SettingsActivity.class);
-			startActivity(call);
-			return true;
-		}
-		
-		return super.onMenuItemSelected(featureId, item);
+	public boolean onMenuItemSelected(int featureId, MenuItem item) {		
+		return menuHandler.handleMenuSelected(this, item.getItemId()) || super.onMenuItemSelected(featureId, item);
 	}
 
 	@Override
@@ -167,13 +154,14 @@ public class MainActivity extends FragmentActivity {
 		final ProgressDialog progressDialog = ProgressDialog.show(this,
 				getString(R.string.progress_pleaseWait),
 				getString(R.string.progress_initial));
+		
 
 		AsyncCallbackReceiver<BookInfo, String> tempCallback = new AsyncCallbackReceiver<BookInfo, String>() {
 
 			@Override
 			public void onAsyncComplete(BookInfo anObject) {
 				if (progressDialog.isShowing()) {
-					progressDialog.dismiss();
+					progressDialog.hide();
 				}
 
 				if (anObject != null) {

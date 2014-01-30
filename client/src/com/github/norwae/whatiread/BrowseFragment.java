@@ -80,7 +80,9 @@ public class BrowseFragment extends Fragment {
 					list.invalidate();
 				}
 
-				progressDialog.dismiss();
+				if (progressDialog.isShowing()) {
+					progressDialog.hide();
+				}
 			}
 		};
 

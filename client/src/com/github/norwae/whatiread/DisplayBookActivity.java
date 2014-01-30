@@ -6,6 +6,7 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -20,6 +21,7 @@ public class DisplayBookActivity extends Activity {
 	public static final String WARN_FOR_READ_BOOKS_VARIABLE = "EXTRA_DISPLAY_READ_WARNING";
 
 	private BookInfo info;
+	private MainMenuHandler menuHandler = new MainMenuHandler();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -162,5 +164,10 @@ public class DisplayBookActivity extends Activity {
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(R.menu.main, menu);
 		return true;
+	}
+	
+	@Override
+	public boolean onMenuItemSelected(int featureId, MenuItem item) {		
+		return menuHandler.handleMenuSelected(this, item.getItemId()) || super.onMenuItemSelected(featureId, item);
 	}
 }
