@@ -70,7 +70,7 @@ public class BrowseFragment extends Fragment {
 			@Override
 			public void onAsyncComplete(List<BookInfo> anObject) {
 				FragmentActivity activity = getActivity();
-				if (activity != null) {
+				if (activity != null && anObject != null) {
 					ListView list = (ListView) activity
 							.findViewById(R.id.bookList);
 					Log.d("search-result", "Updating list view with "
