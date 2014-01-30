@@ -12,9 +12,10 @@ import (
 )
 
 type Call struct {
-	Context  ae.Context
-	Request  *http.Request
-	Response http.ResponseWriter
+	Context    ae.Context
+	Request    *http.Request
+	Response   http.ResponseWriter
+	StatusCode int
 }
 
 func (call *Call) writeError(err error, strings []string) []string {
@@ -64,18 +65,23 @@ func (function CallHandler) ServeHTTP(w http.ResponseWriter, rq *http.Request) {
 
 	call.Response.Header().Add("Content-Type", "application/json;charset=UTF-8")
 	result, err := function(&call)
-	encoder := json.NewEncoder(w)
 
 	if err != nil {
+		if call.StatusCode == 0 {
+			call.StatusCode = http.StatusInternalServerError
+		}
 		errors := call.writeError(err, nil)
-		call.Response.WriteHeader(http.StatusInternalServerError)
-		encoder.Encode(map[string][]string{
-			"errors": errors,
-		})
+		result = map[string][]string{"errors": errors}
 	} else {
-		call.Context.Debugf("Returning %v to client", result)
-		encoder.Encode(result)
+		if call.StatusCode == 0 {
+			call.StatusCode = http.StatusOK
+		}
 	}
+
+	encoder := json.NewEncoder(w)
+	call.Response.WriteHeader(call.StatusCode)
+	call.Context.Debugf("Returning %v to client", result)
+	encoder.Encode(result)
 }
 
 func init() {
@@ -93,6 +99,9 @@ func serveVolumeBulk(call *Call) (interface{}, error) {
 	case "PUT":
 		shelf, err = putVolumeBulk(call)
 	default:
+		call.StatusCode = http.StatusMethodNotAllowed
+
+		call.Response.Header().Add("Allow", "GET, PUT")
 		err = errors.New("Unsupported operation. Only GET and PUT methods are allowed")
 	}
 
@@ -104,7 +113,7 @@ func getVolumeBulk(call *Call) (reply *data.LookupReply, err error) {
 
 	if shelf, err = persistence.LookupBookshelf(call.Context); err == nil {
 		call.Context.Debugf("Bookshelf contains %d volumes", len(shelf.Books))
-		
+
 		for _, str := range call.Request.URL.Query()["search"] {
 			matches := shelf.Search(str)
 
@@ -112,7 +121,7 @@ func getVolumeBulk(call *Call) (reply *data.LookupReply, err error) {
 			for i, ptr := range matches {
 				shelf.Books[i] = *ptr
 			}
-			
+
 			call.Context.Debugf("Filtered by \"%s\", down to %d entries: %v", str, len(shelf.Books), shelf.Books)
 		}
 
@@ -158,6 +167,8 @@ func serveVolumeSingle(call *Call) (interface{}, error) {
 		case "DELETE":
 			book, err = deleteVolumeSingle(call, isbn)
 		default:
+			call.StatusCode = http.StatusMethodNotAllowed
+			call.Response.Header().Add("Allow", "GET, PUT, DELETE")
 			err = errors.New("Unsupported operation. Only GET, PUT and DELETE methods are allowed")
 		}
 	}
