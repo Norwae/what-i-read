@@ -171,6 +171,8 @@ func serveVolumeSingle(call *Call) (interface{}, error) {
 			call.Response.Header().Add("Allow", "GET, PUT, DELETE")
 			err = errors.New("Unsupported operation. Only GET, PUT and DELETE methods are allowed")
 		}
+	} else {
+		call.StatusCode = http.StatusNotFound
 	}
 
 	return book, err
