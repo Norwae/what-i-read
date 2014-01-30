@@ -30,8 +30,7 @@ import com.github.norwae.whatiread.util.IO;
 
 public class ServerStorage implements ISBNStorageProvider {
 
-	private static final String WIR_SERVER_URL = "https://wir-server.appspot.com/";
-	private static final String WIR_VOLUMES_URL = WIR_SERVER_URL + "volumes";
+	private static final String WIR_VOLUMES_URL = "volumes";
 	private static final String TAG = "wir-server-storage";
 
 	static {
@@ -70,18 +69,20 @@ public class ServerStorage implements ISBNStorageProvider {
 
 	private String execute(String requestURL, String method, Activity source,
 			byte[] entity) throws IOException {
+		ServerPreferences prefs = new ServerPreferences(source);
+
 		for (int retry = 0; retry < 3; retry++) {
 			try {
 				HttpURLConnection request = (HttpURLConnection) new URL(
-						requestURL).openConnection();
+						prefs.getServerURL() + requestURL).openConnection();
 				request.setRequestMethod(method);
 
 				switch (retry) {
 				case 2:
-					resetAuthorization(source);
+					resetAuthorization(source, prefs);
 					// fall-through ok
 				case 1:
-					initAuthCookie(source);
+					initAuthCookie(source, prefs);
 				}
 
 				if (entity != null) {
@@ -120,40 +121,36 @@ public class ServerStorage implements ISBNStorageProvider {
 		return null;
 	}
 
-	private void resetAuthorization(Activity source)
+	private void resetAuthorization(Activity source, ServerPreferences conf)
 			throws OperationCanceledException, AuthenticatorException,
 			IOException {
-		AccountManager accountManager = AccountManager.get(source);
-		Account[] accounts = accountManager.getAccountsByType("com.google");
+		Account account = conf.getAccount();
 
-		if (accounts.length == 0) {
+		if (account == null) {
 			return;
 		}
 
-		Account account = accounts[0];
-
-		accountManager.invalidateAuthToken(account.type,
-				buildToken(source, accountManager, account));
+		AccountManager.get(source).invalidateAuthToken(account.type,
+				buildToken(source, account));
 
 	}
 
-	private void initAuthCookie(Activity source)
+	private void initAuthCookie(Activity source, ServerPreferences conf)
 			throws OperationCanceledException, AuthenticatorException,
 			IOException {
 
-		AccountManager accountManager = AccountManager.get(source);
-		Account[] accounts = accountManager.getAccountsByType("com.google");
+		Account account = conf.getAccount();
 
-		if (accounts.length == 0) {
+		if (account == null) {
 			return;
 		}
 
-		Account account = accounts[0];
-		String authToken = buildToken(source, accountManager, account);
+		String authToken = buildToken(source, account);
 
-		HttpURLConnection tempGet = (HttpURLConnection) new URL(WIR_SERVER_URL
-				+ "_ah/login?continue=http://localhost/&auth="
-				+ URLEncoder.encode(authToken)).openConnection();
+		HttpURLConnection tempGet = (HttpURLConnection) new URL(
+				conf.getServerURL()
+						+ "_ah/login?continue=http://localhost/&auth="
+						+ URLEncoder.encode(authToken)).openConnection();
 
 		int responseCode = tempGet.getResponseCode();
 		if (responseCode != HttpURLConnection.HTTP_OK
@@ -164,9 +161,10 @@ public class ServerStorage implements ISBNStorageProvider {
 		}
 	}
 
-	private String buildToken(Activity source, AccountManager accountManager,
-			Account account) throws OperationCanceledException, IOException,
+	private String buildToken(Activity source, Account account)
+			throws OperationCanceledException, IOException,
 			AuthenticatorException {
+		AccountManager accountManager = AccountManager.get(source);
 		AccountManagerFuture<Bundle> accountManagerFuture = accountManager
 				.getAuthToken(account, "ah", null, source, null, null);
 		Bundle authTokenBundle = accountManagerFuture.getResult();

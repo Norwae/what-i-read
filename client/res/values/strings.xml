@@ -1,6 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
+    <string name="pref_name_serverurl">Server URL</string>
+    <string name="pref_desc_serverurl">URL for storage server.</string>
+	<string name="pref_name_account">Google account</string>
+    <string name="pref_desc_account">Account to use for server access.</string>
+    <string name="pref_name_https">Secure connections</string>
+    <string name="pref_desc_https_on">Using a secure connection protects your data from snooping. It might take a little longer, though</string>
+    <string name="pref_desc_https_off">Using a insecure connection is slightly faster and transfers less data.</string>
+    
     <string name="app_name">What I Read</string>
     <string name="action_settings">Settings</string>
     <string name="action_scan">Scan</string>

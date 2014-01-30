@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+    <CheckBoxPreference android:key="https" android:title="@string/pref_name_https" android:summaryOn="@string/pref_desc_https_on" android:summaryOff="@string/pref_desc_https_off" android:defaultValue="true"/>
+	<EditTextPreference android:key="server_url" android:title="@string/pref_name_serverurl" android:summary="@string/pref_desc_serverurl" android:defaultValue="wir-server.appspot.com"/>
+	<ListPreference android:key="account_name" android:title="@string/pref_name_account" android:summary="@string/pref_desc_account"/>    
+
+</PreferenceScreen>

@@ -37,8 +37,10 @@ public class MainActivity extends FragmentActivity {
 		@Override
 		public Fragment getItem(int item) {
 			switch (item) {
-			case 0: return new AddOrCheckFragment();
-			case 1: return new BrowseFragment();
+			case 0:
+				return new AddOrCheckFragment();
+			case 1:
+				return new BrowseFragment();
 			}
 			return null;
 		}
@@ -60,50 +62,55 @@ public class MainActivity extends FragmentActivity {
 		super.onCreate(savedInstanceState);
 
 		setContentView(R.layout.activity_main);
-		
+
 		viewPager = (ViewPager) findViewById(R.id.pager);
 		pageAdapter = new PageAdapter(getSupportFragmentManager());
 		actionBar = getActionBar();
-	
+
 		viewPager.setAdapter(pageAdapter);
 		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 		actionBar.setHomeButtonEnabled(false);
 
 		TabListener tabListener = new TabListener() {
-			
+
 			@Override
-			public void onTabUnselected(Tab tab, FragmentTransaction ft) {}
-			
+			public void onTabUnselected(Tab tab, FragmentTransaction ft) {
+			}
+
 			@Override
 			public void onTabSelected(Tab tab, FragmentTransaction ft) {
 				viewPager.setCurrentItem(tab.getPosition());
 			}
-			
+
 			@Override
-			public void onTabReselected(Tab tab, FragmentTransaction ft) {}
+			public void onTabReselected(Tab tab, FragmentTransaction ft) {
+			}
 		};
-		
+
 		OnPageChangeListener pageChangeListener = new OnPageChangeListener() {
-			
+
 			@Override
 			public void onPageSelected(int position) {
 				actionBar.setSelectedNavigationItem(position);
 			}
-			
+
 			@Override
-			public void onPageScrolled(int arg0, float arg1, int arg2) {}
-			
+			public void onPageScrolled(int arg0, float arg1, int arg2) {
+			}
+
 			@Override
-			public void onPageScrollStateChanged(int arg0) {}
-		}; 
+			public void onPageScrollStateChanged(int arg0) {
+			}
+		};
 
 		String[] titles = { getString(R.string.fragment_title_register),
 				getString(R.string.fragment_title_browse) };
-				
+
 		for (String name : titles) {
-			actionBar.addTab(actionBar.newTab().setText(name).setTabListener(tabListener));
+			actionBar.addTab(actionBar.newTab().setText(name)
+					.setTabListener(tabListener));
 		}
-		
+
 		viewPager.setOnPageChangeListener(pageChangeListener);
 	}
 
@@ -120,23 +127,27 @@ public class MainActivity extends FragmentActivity {
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(R.menu.main, menu);
 
-		menu.add(R.string.action_about).setOnMenuItemClickListener(
-				new OnMenuItemClickListener() {
-
-					@Override
-					public boolean onMenuItemClick(MenuItem item) {
-						new AlertDialog.Builder(MainActivity.this)
-								.setMessage(R.string.alpha)
-								.setNeutralButton(R.string.action_ok, null)
-								.show();
-
-						return true;
-					}
-				});
-
 		return true;
 	}
 
+	@Override
+	public boolean onMenuItemSelected(int featureId, MenuItem item) {
+		if (item.getItemId() == R.id.action_about) {
+			new AlertDialog.Builder(MainActivity.this)
+					.setMessage(R.string.alpha)
+					.setNeutralButton(R.string.action_ok, null).show();
+
+			return true;
+		}
+		
+		if (item.getItemId() == R.id.action_settings) {
+			Intent call = new Intent(this, SettingsActivity.class);
+			startActivity(call);
+			return true;
+		}
+		
+		return super.onMenuItemSelected(featureId, item);
+	}
 
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -151,8 +162,6 @@ public class MainActivity extends FragmentActivity {
 			}
 		}
 	}
-	
-
 
 	void lookupISBN(ISBN13 isbn) {
 		final ProgressDialog progressDialog = ProgressDialog.show(this,
@@ -181,14 +190,13 @@ public class MainActivity extends FragmentActivity {
 
 		lookup.execute(isbn);
 	}
-	
 
 	void displayBookInfo(BookInfo anObject, boolean warnForExisting) {
-		Intent tempIntent = new Intent(this, DisplayBookActivity.class);
-		tempIntent.putExtra(DisplayBookActivity.BOOK_INFO_VARIABLE, anObject);
-		tempIntent.putExtra(DisplayBookActivity.WARN_FOR_READ_BOOKS_VARIABLE,
+		Intent call = new Intent(this, DisplayBookActivity.class);
+		call.putExtra(DisplayBookActivity.BOOK_INFO_VARIABLE, anObject);
+		call.putExtra(DisplayBookActivity.WARN_FOR_READ_BOOKS_VARIABLE,
 				warnForExisting);
-		startActivity(tempIntent);
+		startActivity(call);
 	}
 
 }
