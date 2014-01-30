@@ -1,6 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
+    <string name="pref_name_serverurl">Server URL</string>
+    <string name="pref_desc_serverurl">URL Datenbank-Servers.</string>
+	<string name="pref_name_account">Anmeldekonto</string>
+    <string name="pref_desc_account">Konto, für das die Buchinformationen gespeichert werden.</string>
+    <string name="pref_name_https">Sichere Verbindung verwenden</string>
+    <string name="pref_desc_https_on">Sichere Verbindungen verhindern, das jemand die Buchdaten mitliest. Sie sind allerdings etwas langsamer.</string>
+    <string name="pref_desc_https_off">Unsichere Verbindungen sind schneller und verwenden weniger Transfer. Theoretisch kann jemand alle Buchinformationen mitlesen.</string>
+    
     <string name="app_name">Schon gelesen?</string>
     <string name="action_settings">Einstellungen</string>
     <string name="action_scan">Scan</string>
