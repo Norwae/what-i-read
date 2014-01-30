@@ -100,13 +100,13 @@ public class DisplayBookActivity extends Activity {
 		delete.execute(info);
 	}
 
-	protected void saveAndReturn() {
-		TextView input = (TextView) findViewById(R.id.comment);
-		info.setComment(stringFromView(input));
-		input = (TextView) findViewById(R.id.author);
-		info.setAuthors(Strings.split(", ", stringFromView(input)));
-		input = (TextView) findViewById(R.id.title);
-		info.setTitle(stringFromView(input));
+	protected void saveAndReturn() {		
+		info.setComment(stringFromView(R.id.comment));		
+		info.setAuthors(Strings.split(", ", stringFromView(R.id.author)));		
+		info.setTitle(stringFromView(R.id.title));
+		info.setSubtitle(stringFromView(R.id.subtitle));
+		info.setPublisher(stringFromView(R.id.publisher));
+		info.setSeries(stringFromView(R.id.series));
 
 		final ProgressDialog progressDialog = ProgressDialog.show(this,
 				getString(R.string.progress_pleaseWait),
@@ -132,7 +132,8 @@ public class DisplayBookActivity extends Activity {
 		persist.execute(info);
 	}
 
-	private String stringFromView(TextView input) {
+	private String stringFromView(int id) {
+		TextView input = (TextView) findViewById(id);
 		CharSequence text = input.getText();
 		return text != null ? text.toString() : null;
 	}

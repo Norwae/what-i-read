@@ -8,7 +8,7 @@ import java.io.OutputStream;
 public class IO {
 	public static void copy(OutputStream out, InputStream in)
 			throws IOException {
-		byte[] buffer = new byte[8129];
+		byte[] buffer = new byte[8192];
 		int n;
 		while (-1 != (n = in.read(buffer))) {
 			out.write(buffer, 0, n);

@@ -5,7 +5,8 @@
 
     <ScrollView
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" >
+        android:layout_height="match_parent"
+        android:layout_above="@+id/save" >
 
         <RelativeLayout
             android:layout_width="wrap_content"
@@ -18,7 +19,6 @@
                 android:layout_alignParentLeft="true" >
 
                 <TableRow
-                    android:id="@+id/titleRow"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" >
 
@@ -32,7 +32,6 @@
                 </TableRow>
 
                 <TableRow
-                    android:id="@+id/subtitleRow"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" >
 
@@ -46,7 +45,6 @@
                 </TableRow>
 
                 <TableRow
-                    android:id="@+id/seriesRow"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" >
 
@@ -60,7 +58,6 @@
                 </TableRow>
 
                 <TableRow
-                    android:id="@+id/pageCountRow"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" >
 
@@ -68,13 +65,11 @@
                         android:id="@+id/pageCountLabel"
                         android:text="@string/pageCount" />
 
-                    <EditText
-                        android:id="@+id/pageCount"
-                        android:inputType="text" />
+                    <TextView
+                        android:id="@+id/pageCount"/>
                 </TableRow>
 
                 <TableRow
-                    android:id="@+id/publisherRow"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" >
 
@@ -88,7 +83,6 @@
                 </TableRow>
 
                 <TableRow
-                    android:id="@+id/authorRow"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" >
 
@@ -102,7 +96,6 @@
                 </TableRow>
 
                 <TableRow
-                    android:id="@+id/isbnRow"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" >
 

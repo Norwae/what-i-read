@@ -14,30 +14,41 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
-        android:layout_toLeftOf="@+id/add_isbn"
-        android:singleLine="true"
+        android:hint="@string/input_title"
         android:inputType="number|phone"
+        android:maxLength="13"
         android:maxLines="1"
-        android:maxLength="13"        
-        android:hint="@string/input_title" >
+        android:singleLine="true" >
+
     </EditText>
+    
+    <TextView
+        android:id="@+id/sep"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/add_isbn"
+        android:layout_centerHorizontal="true"
+        android:text="@string/sepOr"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <Button
         android:id="@+id/scan"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/add_isbn"
-        android:layout_alignBottom="@+id/add_isbn"
+        android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
+        android:layout_below="@id/sep"
         android:text="@string/action_scan" />
 
     <Button
         android:id="@+id/add_isbn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/isbn"
-        android:layout_toLeftOf="@+id/scan"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/isbn"
         android:text="@string/action_add" />
 
 </RelativeLayout>
