@@ -189,6 +189,7 @@ func deleteVolumeSingle(call *Call, isbn isbn13.ISBN13) (info *data.BookMetaData
 			}
 
 		}
+		call.StatusCode = http.StatusNotFound
 		return errors.New("ISBN not found")
 	})
 
