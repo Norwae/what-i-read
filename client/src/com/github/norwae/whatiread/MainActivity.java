@@ -151,29 +151,23 @@ public class MainActivity extends FragmentActivity {
 	}
 
 	void lookupISBN(ISBN13 isbn) {
-		final ProgressDialog progressDialog = ProgressDialog.show(this,
+		ProgressDialog progressDialog = ProgressDialog.show(this,
 				getString(R.string.progress_pleaseWait),
 				getString(R.string.progress_initial));
 		
 
-		AsyncCallbackReceiver<BookInfo, String> tempCallback = new AsyncCallbackReceiver<BookInfo, String>() {
+		AsyncCallbackReceiver<BookInfo, String> tempCallback = new ProgressDialogAsynCallback<BookInfo>(progressDialog) {
 
 			@Override
 			public void onAsyncComplete(BookInfo anObject) {
-				if (progressDialog.isShowing()) {
-					progressDialog.hide();
-				}
-
+				super.onAsyncComplete(anObject);
+				
 				if (anObject != null) {
 					displayBookInfo(anObject, true);
 				}
 			}
-
-			@Override
-			public void onProgressReport(String... someProgress) {
-				progressDialog.setMessage(someProgress[0]);
-			}
 		};
+		
 		BookISBNLookup lookup = new BookISBNLookup(tempCallback, this);
 
 		lookup.execute(isbn);

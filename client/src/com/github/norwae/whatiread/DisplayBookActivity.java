@@ -17,6 +17,19 @@ import com.github.norwae.whatiread.util.Strings;
 
 public class DisplayBookActivity extends Activity {
 
+	private final class Callback extends ProgressDialogAsynCallback<Void>{
+		public Callback(ProgressDialog progressDialog) {
+			super(progressDialog);
+		}
+
+		@Override
+		public void onAsyncComplete(Void anObject) {
+			super.onAsyncComplete(anObject);
+
+			finish();
+		}
+	}
+
 	public static final String BOOK_INFO_VARIABLE = "EXTRA_BOOK_INFO";
 	public static final String WARN_FOR_READ_BOOKS_VARIABLE = "EXTRA_DISPLAY_READ_WARNING";
 
@@ -83,21 +96,7 @@ public class DisplayBookActivity extends Activity {
 				getString(R.string.progress_initial));
 
 		BookDelete delete = new BookDelete(this,
-				new AsyncCallbackReceiver<Void, String>() {
-					@Override
-					public void onProgressReport(String... someProgress) {
-						progressDialog.setMessage(someProgress[0]);
-					}
-
-					@Override
-					public void onAsyncComplete(Void anObject) {
-						if (progressDialog.isShowing()) {
-							progressDialog.dismiss();
-						}
-
-						finish();
-					}
-				});
+				new Callback(progressDialog));
 
 		delete.execute(info);
 	}
@@ -115,21 +114,7 @@ public class DisplayBookActivity extends Activity {
 				getString(R.string.progress_initial));
 
 		BookSave persist = new BookSave(this,
-				new AsyncCallbackReceiver<Void, String>() {
-					@Override
-					public void onProgressReport(String... someProgress) {
-						progressDialog.setMessage(someProgress[0]);
-					}
-
-					@Override
-					public void onAsyncComplete(Void anObject) {
-						if (progressDialog.isShowing()) {
-							progressDialog.dismiss();
-						}
-
-						finish();
-					}
-				});
+				new Callback(progressDialog));
 
 		persist.execute(info);
 	}
