@@ -1,16 +1,11 @@
 package com.github.norwae.whatiread;
 
-import java.util.Collection;
-import java.util.HashSet;
-
 import android.app.ActionBar;
 import android.app.ActionBar.Tab;
 import android.app.ActionBar.TabListener;
-import android.app.AlertDialog;
 import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -20,7 +15,6 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MenuItem.OnMenuItemClickListener;
 
 import com.github.norwae.whatiread.data.BookInfo;
 import com.github.norwae.whatiread.data.ISBN13;
@@ -52,12 +46,12 @@ public class MainActivity extends FragmentActivity {
 
 	}
 
-	private Collection<AsyncTask<?, ?, ?>> backgroundTasks = new HashSet<AsyncTask<?, ?, ?>>();
 	private ViewPager viewPager;
 	private PageAdapter pageAdapter;
 	private ActionBar actionBar;
-	private MainMenuHandler menuHandler = new MainMenuHandler();	
-
+	
+	private MainMenuHandler menuHandler = new MainMenuHandler();
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -116,15 +110,6 @@ public class MainActivity extends FragmentActivity {
 	}
 
 	@Override
-	protected void onDestroy() {
-		for (AsyncTask<?, ?, ?> temp : backgroundTasks) {
-			temp.cancel(false);
-		}
-
-		super.onDestroy();
-	}
-
-	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(R.menu.main, menu);
 
@@ -180,5 +165,4 @@ public class MainActivity extends FragmentActivity {
 				warnForExisting);
 		startActivity(call);
 	}
-
 }

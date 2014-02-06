@@ -19,6 +19,7 @@
     <string name="action_edit">Bearbeiten</string>
     <string name="action_cancel">Abbrechen</string>
     <string name="action_about">Über "Schon gelesen?"</string>
+    <string name="action_sort">Sortieren</string>
     
     
     <string name="sepOr">--- oder ---</string>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+       <array
+        name="order_field_names">
+        <item>@string/title</item>
+        <item>@string/subtitle</item>
+        <item>@string/author</item>
+        <item>@string/series</item>
+        <item>@string/publisher</item>
+    </array>
+</resources>

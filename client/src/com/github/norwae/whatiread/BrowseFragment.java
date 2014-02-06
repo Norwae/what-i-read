@@ -2,26 +2,55 @@ package com.github.norwae.whatiread;
 
 import java.util.List;
 
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.DialogFragment;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.github.norwae.whatiread.data.BookInfo;
 import com.github.norwae.whatiread.data.BookInfoListAdapter;
+import com.github.norwae.whatiread.data.BookInfoListAdapter.OrderFields;
 
 public class BrowseFragment extends Fragment {
-
+	public static class SelectOrderFragment extends DialogFragment {
+		
+		
+		@Override
+		public Dialog onCreateDialog(Bundle savedInstanceState) {
+			ListView displayList = (ListView) getActivity().findViewById(R.id.bookList);
+			BookInfoListAdapter adapter = (BookInfoListAdapter) displayList.getAdapter();
+			int selected = adapter != null ? adapter.getOrder().ordinal() : 0;
+			
+			AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+			builder.setSingleChoiceItems(R.array.order_field_names, selected, new DialogInterface.OnClickListener() {
+				
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					ListView displayList = (ListView) getActivity().findViewById(R.id.bookList);
+					BookInfoListAdapter adapter = (BookInfoListAdapter) displayList.getAdapter();
+					
+					if (adapter != null) {
+						adapter.setOrder(OrderFields.values()[which]);
+						displayList.invalidateViews();
+					}
+					dialog.dismiss();
+				}
+			});
+			return builder.create();
+		}
+	}
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -41,14 +70,25 @@ public class BrowseFragment extends Fragment {
 			}
 		});
 
-		Button trigger = (Button) view.findViewById(R.id.searchTrigger);
+		View search = view.findViewById(R.id.searchTrigger);
 
-		trigger.setOnClickListener(new OnClickListener() {
+		search.setOnClickListener(new View.OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
 				TextView textView = (TextView) view.findViewById(R.id.search);
 				searchForText(textView.getText().toString());
+			}
+		});
+		
+		View order = view.findViewById(R.id.orderTrigger);
+		
+		order.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				SelectOrderFragment fragment = new SelectOrderFragment();
+				fragment.show(getActivity().getFragmentManager(), "");
 			}
 		});
 		return view;
@@ -69,14 +109,14 @@ public class BrowseFragment extends Fragment {
 
 			@Override
 			public void onAsyncComplete(List<BookInfo> anObject) {
-				FragmentActivity activity = getActivity();
+				Activity activity = getActivity();
 				if (activity != null && anObject != null) {
-					ListView list = (ListView) activity
-							.findViewById(R.id.bookList);
+					ListView list = getDisplayList();
 					Log.d("search-result", "Updating list view with "
 							+ anObject.size() + " Books");
 					ListAdapter adapter = new BookInfoListAdapter(anObject);
 					list.setAdapter(adapter);
+					
 					list.invalidate();
 				}
 
@@ -89,5 +129,10 @@ public class BrowseFragment extends Fragment {
 		BookSearch query = new BookSearch(receiver, this.getActivity());
 
 		query.execute(text);
+	}
+
+	protected ListView getDisplayList() {
+		View list = getActivity().findViewById(R.id.bookList);
+		return (ListView) list;
 	}
 }

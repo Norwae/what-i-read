@@ -3,6 +3,7 @@ package com.github.norwae.whatiread;
 import java.util.Collections;
 
 import android.app.AlertDialog;
+
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;

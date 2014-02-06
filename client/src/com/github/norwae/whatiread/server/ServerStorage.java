@@ -179,8 +179,11 @@ public class ServerStorage implements ISBNStorageProvider {
 		StringBuilder url = new StringBuilder(WIR_VOLUMES_URL);
 		String sep = "?";
 		for (String term : terms) {
-			url.append(sep).append("search=").append(URLEncoder.encode(term));
-			sep = "&";
+			if (term != null && !term.isEmpty()) {
+				url.append(sep).append("search=")
+						.append(URLEncoder.encode(term));
+				sep = "&";
+			}
 		}
 
 		try {

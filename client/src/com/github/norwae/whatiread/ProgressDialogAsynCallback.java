@@ -23,8 +23,9 @@ public class ProgressDialogAsynCallback<Result> implements
 			try {
 				progressDialog.dismiss();
 			} catch (IllegalArgumentException e) {
-				// acitivty exited or restated due to an orientation change. The dialog may be 
-				// stale even if it reports to be showing. Log this, but don't raise a fuzz
+				// activity exited or restated due to an orientation change. The
+				// dialog may be stale even if it reports to be showing. Log
+				// this, but don't raise a fuzz
 				Log.w("progress callback", "stale dialog", e);
 			}
 		}
