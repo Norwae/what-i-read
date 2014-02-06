@@ -4,7 +4,6 @@ import android.app.ActionBar;
 import android.app.ActionBar.Tab;
 import android.app.ActionBar.TabListener;
 import android.app.FragmentTransaction;
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -15,13 +14,14 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ProgressBar;
 
 import com.github.norwae.whatiread.data.BookInfo;
 import com.github.norwae.whatiread.data.ISBN13;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
-public class MainActivity extends FragmentActivity {
+public class MainActivity extends FragmentActivity implements ProgressBarDisplayer {
 
 	private static class PageAdapter extends FragmentPagerAdapter {
 		public PageAdapter(FragmentManager manager) {
@@ -136,17 +136,11 @@ public class MainActivity extends FragmentActivity {
 	}
 
 	void lookupISBN(ISBN13 isbn) {
-		ProgressDialog progressDialog = ProgressDialog.show(this,
-				getString(R.string.progress_pleaseWait),
-				getString(R.string.progress_initial));
 		
 
-		AsyncCallbackReceiver<BookInfo, String> tempCallback = new ProgressDialogAsynCallback<BookInfo>(progressDialog) {
-
+		AsyncCallbackReceiver<BookInfo, String> tempCallback = new ProgressBarDialogCallback<BookInfo>(this) {
 			@Override
-			public void onAsyncComplete(BookInfo anObject) {
-				super.onAsyncComplete(anObject);
-				
+			public void onAsyncResult(BookInfo anObject) {
 				if (anObject != null) {
 					displayBookInfo(anObject, true);
 				}
@@ -164,5 +158,10 @@ public class MainActivity extends FragmentActivity {
 		call.putExtra(DisplayBookActivity.WARN_FOR_READ_BOOKS_VARIABLE,
 				warnForExisting);
 		startActivity(call);
+	}
+	
+	@Override
+	public ProgressBar getProgressBar() {
+		return (ProgressBar) findViewById(R.id.progressBar);
 	}
 }

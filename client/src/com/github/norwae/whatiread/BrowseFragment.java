@@ -6,7 +6,6 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
-import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -17,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.github.norwae.whatiread.data.BookInfo;
@@ -25,32 +25,37 @@ import com.github.norwae.whatiread.data.BookInfoListAdapter.OrderFields;
 
 public class BrowseFragment extends Fragment {
 	public static class SelectOrderFragment extends DialogFragment {
-		
-		
+
 		@Override
 		public Dialog onCreateDialog(Bundle savedInstanceState) {
-			ListView displayList = (ListView) getActivity().findViewById(R.id.bookList);
-			BookInfoListAdapter adapter = (BookInfoListAdapter) displayList.getAdapter();
+			ListView displayList = (ListView) getActivity().findViewById(
+					R.id.bookList);
+			BookInfoListAdapter adapter = (BookInfoListAdapter) displayList
+					.getAdapter();
 			int selected = adapter != null ? adapter.getOrder().ordinal() : 0;
-			
+
 			AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-			builder.setSingleChoiceItems(R.array.order_field_names, selected, new DialogInterface.OnClickListener() {
-				
-				@Override
-				public void onClick(DialogInterface dialog, int which) {
-					ListView displayList = (ListView) getActivity().findViewById(R.id.bookList);
-					BookInfoListAdapter adapter = (BookInfoListAdapter) displayList.getAdapter();
-					
-					if (adapter != null) {
-						adapter.setOrder(OrderFields.values()[which]);
-						displayList.invalidateViews();
-					}
-					dialog.dismiss();
-				}
-			});
+			builder.setSingleChoiceItems(R.array.order_field_names, selected,
+					new DialogInterface.OnClickListener() {
+
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							ListView displayList = (ListView) getActivity()
+									.findViewById(R.id.bookList);
+							BookInfoListAdapter adapter = (BookInfoListAdapter) displayList
+									.getAdapter();
+
+							if (adapter != null) {
+								adapter.setOrder(OrderFields.values()[which]);
+								displayList.invalidateViews();
+							}
+							dialog.dismiss();
+						}
+					});
 			return builder.create();
 		}
 	}
+
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -80,11 +85,11 @@ public class BrowseFragment extends Fragment {
 				searchForText(textView.getText().toString());
 			}
 		});
-		
+
 		View order = view.findViewById(R.id.orderTrigger);
-		
+
 		order.setOnClickListener(new View.OnClickListener() {
-			
+
 			@Override
 			public void onClick(View v) {
 				SelectOrderFragment fragment = new SelectOrderFragment();
@@ -96,32 +101,26 @@ public class BrowseFragment extends Fragment {
 
 	private void searchForText(String text) {
 
-		final ProgressDialog progressDialog = ProgressDialog.show(
-				getActivity(), getString(R.string.progress_pleaseWait),
-				getString(R.string.progress_initial));
-
-		AsyncCallbackReceiver<List<BookInfo>, String> receiver = new AsyncCallbackReceiver<List<BookInfo>, String>() {
-
-			@Override
-			public void onProgressReport(String... someProgress) {
-				progressDialog.setMessage(someProgress[0]);
-			}
-
-			@Override
-			public void onAsyncComplete(List<BookInfo> anObject) {
-				Activity activity = getActivity();
-				if (activity != null && anObject != null) {
-					ListView list = getDisplayList();
-					Log.d("search-result", "Updating list view with "
-							+ anObject.size() + " Books");
-					ListAdapter adapter = new BookInfoListAdapter(anObject);
-					list.setAdapter(adapter);
+		AsyncCallbackReceiver<List<BookInfo>, String> receiver = new ProgressBarDialogCallback<List<BookInfo>>(
+				new ProgressBarDisplayer() {
 					
-					list.invalidate();
-				}
+					@Override
+					public ProgressBar getProgressBar() {
+						return (ProgressBar) getView().findViewById(R.id.progressBar);
+					}
+				}) {
+			@Override
+			protected void onAsyncResult(List<BookInfo> aResult) {
+				Activity activity = getActivity();
+				if (activity != null && aResult != null) {
+					ListView list = getDisplayList();
+					Log.d("search-result",
+							"Updating list view with " + aResult.size()
+									+ " Books");
+					ListAdapter adapter = new BookInfoListAdapter(aResult);
+					list.setAdapter(adapter);
 
-				if (progressDialog.isShowing()) {
-					progressDialog.hide();
+					list.invalidate();
 				}
 			}
 		};

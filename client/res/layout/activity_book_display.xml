@@ -65,8 +65,7 @@
                         android:id="@+id/pageCountLabel"
                         android:text="@string/pageCount" />
 
-                    <TextView
-                        android:id="@+id/pageCount"/>
+                    <TextView android:id="@+id/pageCount" />
                 </TableRow>
 
                 <TableRow
@@ -147,5 +146,14 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
         android:text="@string/action_save" />
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyleLarge"
+        android:visibility="invisible"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true" />
 
 </RelativeLayout>

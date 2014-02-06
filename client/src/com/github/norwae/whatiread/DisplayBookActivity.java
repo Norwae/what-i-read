@@ -2,7 +2,6 @@ package com.github.norwae.whatiread;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.Menu;
@@ -10,22 +9,22 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.github.norwae.whatiread.data.BookInfo;
 import com.github.norwae.whatiread.util.Strings;
 
-public class DisplayBookActivity extends Activity {
+public class DisplayBookActivity extends Activity implements
+		ProgressBarDisplayer {
 
-	private final class Callback extends ProgressDialogAsynCallback<Void>{
-		public Callback(ProgressDialog progressDialog) {
-			super(progressDialog);
+	private final class FinishCallback extends ProgressBarDialogCallback<Void> {
+		private FinishCallback() {
+			super(DisplayBookActivity.this);
 		}
 
 		@Override
-		public void onAsyncComplete(Void anObject) {
-			super.onAsyncComplete(anObject);
-
+		protected void onAsyncResult(Void aResult) {
 			finish();
 		}
 	}
@@ -35,6 +34,12 @@ public class DisplayBookActivity extends Activity {
 
 	private BookInfo info;
 	private MainMenuHandler menuHandler = new MainMenuHandler();
+	private ProgressBar progress;
+
+	@Override
+	public ProgressBar getProgressBar() {
+		return progress;
+	}
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +48,8 @@ public class DisplayBookActivity extends Activity {
 		info = (BookInfo) getIntent().getExtras().get(BOOK_INFO_VARIABLE);
 
 		initViewFields();
+
+		progress = (ProgressBar) findViewById(R.id.progressBar);
 
 		Button save = (Button) findViewById(R.id.save);
 		save.setOnClickListener(new OnClickListener() {
@@ -90,31 +97,20 @@ public class DisplayBookActivity extends Activity {
 	}
 
 	protected void deleteAndReturn() {
-
-		final ProgressDialog progressDialog = ProgressDialog.show(this,
-				getString(R.string.progress_pleaseWait),
-				getString(R.string.progress_initial));
-
-		BookDelete delete = new BookDelete(this,
-				new Callback(progressDialog));
+		BookDelete delete = new BookDelete(this, new FinishCallback());
 
 		delete.execute(info);
 	}
 
-	protected void saveAndReturn() {		
-		info.setComment(stringFromView(R.id.comment));		
-		info.setAuthors(Strings.split(", ", stringFromView(R.id.author)));		
+	protected void saveAndReturn() {
+		info.setComment(stringFromView(R.id.comment));
+		info.setAuthors(Strings.split(", ", stringFromView(R.id.author)));
 		info.setTitle(stringFromView(R.id.title));
 		info.setSubtitle(stringFromView(R.id.subtitle));
 		info.setPublisher(stringFromView(R.id.publisher));
 		info.setSeries(stringFromView(R.id.series));
 
-		final ProgressDialog progressDialog = ProgressDialog.show(this,
-				getString(R.string.progress_pleaseWait),
-				getString(R.string.progress_initial));
-
-		BookSave persist = new BookSave(this,
-				new Callback(progressDialog));
+		BookSave persist = new BookSave(this, new FinishCallback());
 
 		persist.execute(info);
 	}
@@ -124,7 +120,7 @@ public class DisplayBookActivity extends Activity {
 		CharSequence text = input.getText();
 		return text != null ? text.toString() : null;
 	}
-	
+
 	private void initTextField(CharSequence value, int id) {
 		TextView view = (TextView) findViewById(id);
 		view.setText(value);
@@ -136,12 +132,15 @@ public class DisplayBookActivity extends Activity {
 		initTextField(info.getSubtitle(), R.id.subtitle);
 		initTextField(info.getSeries(), R.id.series);
 		initTextField(info.getPublisher(), R.id.publisher);
-		initTextField(info.getPageCount() == 0 ? null : "" + info.getPageCount(), R.id.pageCount);
+		initTextField(
+				info.getPageCount() == 0 ? null : "" + info.getPageCount(),
+				R.id.pageCount);
 		initTextField(info.getIsbn(), R.id.isbn);
 		initTextField(info.getComment(), R.id.comment);
-		
+
 		if (info.getThumbnailSmall() != null) {
-			new ImageFetch(this, R.id.coverImage).execute(info.getThumbnailSmall());
+			new ImageFetch(this, R.id.coverImage).execute(info
+					.getThumbnailSmall());
 		}
 	}
 
@@ -150,9 +149,10 @@ public class DisplayBookActivity extends Activity {
 		getMenuInflater().inflate(R.menu.main, menu);
 		return true;
 	}
-	
+
 	@Override
-	public boolean onMenuItemSelected(int featureId, MenuItem item) {		
-		return menuHandler.handleMenuSelected(this, item.getItemId()) || super.onMenuItemSelected(featureId, item);
+	public boolean onMenuItemSelected(int featureId, MenuItem item) {
+		return menuHandler.handleMenuSelected(this, item.getItemId())
+				|| super.onMenuItemSelected(featureId, item);
 	}
 }
