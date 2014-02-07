@@ -10,5 +10,4 @@ public interface ISBNStorageProvider {
 	boolean storeInfo(BookInfo info, Activity sourceActivity);
 	boolean deleteInfo(BookInfo info, Activity sourceActivity);
 	
-	String getProgressMessage(Activity sourceContext);
 }

@@ -14,8 +14,6 @@ public class BookSave extends StorageInteraction<BookInfo, String, Void> {
 	@Override
 	protected Void doInBackground(BookInfo... params) {
 		for (ISBNStorageProvider provider : allProviders) {
-			publishProgress(provider.getProgressMessage(context));
-
 			if (provider.storeInfo(params[0], context)) {
 				break;
 			}

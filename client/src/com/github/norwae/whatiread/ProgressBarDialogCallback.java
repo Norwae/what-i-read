@@ -1,6 +1,5 @@
 package com.github.norwae.whatiread;
 
-import android.app.Activity;
 import android.view.View;
 
 public abstract class ProgressBarDialogCallback<Result> implements

@@ -18,8 +18,6 @@ public class BookSearch extends StorageInteraction<String, String, List<BookInfo
 	@Override
 	protected List<BookInfo> doInBackground(String... params) {
 		for (ISBNStorageProvider provider : allProviders) {
-			publishProgress(provider.getProgressMessage(context));
-
 			List<BookInfo> results = provider.searchForTerm(Arrays.asList(params), context);
 			if (results != null) {
 				return results;

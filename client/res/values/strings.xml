@@ -30,7 +30,7 @@
     
     <string name="input_title">Search</string>
     
-    <string name="alpha">Welcome to the alpha-version of "what i read". Please note that this is a project still under active development. Bugs are not only possible, they are expected. Nevertheless, hopefully you will enjoy this application.\n\nThis application is free software. You can retrieve the source code and licence at https://github.com/Norwae/what-i-read.\n\nThe ISBN metadata lookup is powered by Google Books.</string>
+    <string name="about_text">Welcome to "what i read". Please note that this is a project still under active development. This application allows you to input books (either by scanning a barcode, or entering their 13-digit ISBN). You will be notified if you read the book before. Additionally, you browse through the books you\'ve already marked as read. We hope you will enjoy this application.\n\nThis application is free software. You can retrieve the source code and licence at https://github.com/Norwae/what-i-read.\n\nThe ISBN metadata lookup is powered by Google Books.</string>
 
     
     <string name="title">Title</string>
@@ -47,13 +47,6 @@
     
     <string name="alert.alreadyKnown">You\'ve already read this book</string>
     
-    <string name="query.wirServer">Waiting for server</string>
-    
-    <string name="progress.pleaseWait">Please wait</string>
-    <string name="progress.initial">Performing background work</string>
-    <string name="progress.openDB">Connecting to book database</string>
-	<string name="progress.saveBook">Saving book information</string>
-	<string name="progress.deleteBook">Deleting book information</string>
 	
 	<string name="barcode_scanner.download.title">Install Barcode Scanner?</string>
 	<string name="barcode_scanner.download.message">This application requires Barcode Scanner. Would you like to install it?</string>

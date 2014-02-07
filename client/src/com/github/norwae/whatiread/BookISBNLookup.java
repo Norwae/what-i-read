@@ -17,10 +17,7 @@ public class BookISBNLookup extends StorageInteraction<ISBN13, String, BookInfo>
 	protected BookInfo doInBackground(ISBN13... params) {
 		ISBN13 query = (ISBN13) params[0];
 		BookInfo info = null;
-		for (ISBNStorageProvider temp : allProviders) {
-			String msg = temp.getProgressMessage(context);
-			publishProgress(msg);
-			
+		for (ISBNStorageProvider temp : allProviders) {			
 			info = temp.getBookinfo(query, context);
 			
 			if (info != null) {

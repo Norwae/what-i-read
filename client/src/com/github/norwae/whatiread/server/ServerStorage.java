@@ -38,11 +38,6 @@ public class ServerStorage implements ISBNStorageProvider {
 	}
 
 	@Override
-	public String getProgressMessage(Activity sourceContext) {
-		return sourceContext.getString(R.string.query_wirServer);
-	}
-
-	@Override
 	public BookInfo getBookinfo(ISBN13 isbn, Activity sourceActivity) {
 		try {
 
