@@ -9,18 +9,17 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.github.norwae.whatiread.data.BookInfo;
 import com.github.norwae.whatiread.util.Strings;
 
-public class DisplayBookActivity extends Activity implements
-		ProgressBarDisplayer {
+public class DisplayBookActivity extends Activity {
 
 	private final class FinishCallback extends ProgressBarDialogCallback<Void> {
 		private FinishCallback() {
-			super(DisplayBookActivity.this);
+			super(getWindow().getDecorView(), R.id.progressBar, R.id.save,
+					R.id.delete);
 		}
 
 		@Override
@@ -34,12 +33,6 @@ public class DisplayBookActivity extends Activity implements
 
 	private BookInfo info;
 	private MainMenuHandler menuHandler = new MainMenuHandler();
-	private ProgressBar progress;
-
-	@Override
-	public ProgressBar getProgressBar() {
-		return progress;
-	}
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -48,8 +41,6 @@ public class DisplayBookActivity extends Activity implements
 		info = (BookInfo) getIntent().getExtras().get(BOOK_INFO_VARIABLE);
 
 		initViewFields();
-
-		progress = (ProgressBar) findViewById(R.id.progressBar);
 
 		Button save = (Button) findViewById(R.id.save);
 		save.setOnClickListener(new OnClickListener() {

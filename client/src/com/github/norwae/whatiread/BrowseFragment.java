@@ -16,7 +16,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.github.norwae.whatiread.data.BookInfo;
@@ -102,13 +101,8 @@ public class BrowseFragment extends Fragment {
 	private void searchForText(String text) {
 
 		AsyncCallbackReceiver<List<BookInfo>, String> receiver = new ProgressBarDialogCallback<List<BookInfo>>(
-				new ProgressBarDisplayer() {
-					
-					@Override
-					public ProgressBar getProgressBar() {
-						return (ProgressBar) getView().findViewById(R.id.progressBar);
-					}
-				}) {
+				getView(), R.id.progressBar, R.id.searchTrigger,
+				R.id.orderTrigger) {
 			@Override
 			protected void onAsyncResult(List<BookInfo> aResult) {
 				Activity activity = getActivity();

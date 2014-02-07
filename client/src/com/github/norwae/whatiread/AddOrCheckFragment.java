@@ -46,7 +46,7 @@ public class AddOrCheckFragment extends Fragment {
 				ISBN13 isbn = ISBN13.parse(text);
 				
 				if (isbn != null) {
-					((MainActivity) getActivity()).lookupISBN(isbn);
+					((MainActivity) getActivity()).lookupISBN(isbn, getView().getRootView());
 				} else {
 					Toast.makeText(getActivity(), R.string.invalid_isbn, Toast.LENGTH_SHORT).show();
 				}
