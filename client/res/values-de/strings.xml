@@ -45,7 +45,7 @@
     <string name="coverImage">Cover</string>
     
     <string name="alert.alreadyKnown">Du hast dieses Buch schon gelesen</string>
-    
+    <string name="serverIOError">Fehler: Server nicht verfügbar</string>
 	
 	<string name="barcode_scanner.download.title">Barcode Scanner installieren?</string>
 	<string name="barcode_scanner.download.message">Für die Scanfunktion wird ein Barcode-scanner benötigt. Soll dieser nun installiert werden?</string>

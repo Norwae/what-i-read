@@ -13,7 +13,6 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.github.norwae.whatiread.R;
-import com.github.norwae.whatiread.data.BookInfoListAdapter.OrderFields;
 import com.github.norwae.whatiread.util.Strings;
 
 public class BookInfoListAdapter extends BaseAdapter {

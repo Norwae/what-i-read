@@ -22,7 +22,6 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
 
-import com.github.norwae.whatiread.R;
 import com.github.norwae.whatiread.data.BookInfo;
 import com.github.norwae.whatiread.data.ISBN13;
 import com.github.norwae.whatiread.data.ISBNStorageProvider;
@@ -40,7 +39,6 @@ public class ServerStorage implements ISBNStorageProvider {
 	@Override
 	public BookInfo getBookinfo(ISBN13 isbn, Activity sourceActivity) {
 		try {
-
 			String json = execute(WIR_VOLUMES_URL + "/" + isbn.toString(),
 					"GET", sourceActivity, null);
 			if (json != null) {

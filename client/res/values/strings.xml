@@ -46,7 +46,7 @@
     <string name="coverImage">Cover</string>
     
     <string name="alert.alreadyKnown">You\'ve already read this book</string>
-    
+    <string name="serverIOError">Communications error</string>
 	
 	<string name="barcode_scanner.download.title">Install Barcode Scanner?</string>
 	<string name="barcode_scanner.download.message">This application requires Barcode Scanner. Would you like to install it?</string>

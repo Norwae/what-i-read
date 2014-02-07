@@ -15,6 +15,7 @@ import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import com.github.norwae.whatiread.data.BookInfo;
 import com.github.norwae.whatiread.data.ISBN13;
@@ -141,6 +142,8 @@ public class MainActivity extends FragmentActivity {
 			public void onAsyncResult(BookInfo anObject) {
 				if (anObject != null) {
 					displayBookInfo(anObject, true);
+				} else {
+					Toast.makeText(MainActivity.this, getString(R.string.serverIOError), Toast.LENGTH_SHORT).show();
 				}
 			}
 		};

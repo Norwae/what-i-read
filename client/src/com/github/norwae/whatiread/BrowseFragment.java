@@ -2,7 +2,6 @@ package com.github.norwae.whatiread;
 
 import java.util.List;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
@@ -17,6 +16,7 @@ import android.widget.AdapterView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.github.norwae.whatiread.data.BookInfo;
 import com.github.norwae.whatiread.data.BookInfoListAdapter;
@@ -105,8 +105,7 @@ public class BrowseFragment extends Fragment {
 				R.id.orderTrigger) {
 			@Override
 			protected void onAsyncResult(List<BookInfo> aResult) {
-				Activity activity = getActivity();
-				if (activity != null && aResult != null) {
+				if (aResult != null) {
 					ListView list = getDisplayList();
 					Log.d("search-result",
 							"Updating list view with " + aResult.size()
@@ -115,6 +114,11 @@ public class BrowseFragment extends Fragment {
 					list.setAdapter(adapter);
 
 					list.invalidate();
+				} else {
+					Toast.makeText(getActivity(),
+							getString(R.string.serverIOError),
+							Toast.LENGTH_SHORT).show();
+
 				}
 			}
 		};
