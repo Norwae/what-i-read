@@ -9,7 +9,7 @@ public class MainMenuHandler {
 		if (id == R.id.action_about) {
 			new AlertDialog.Builder(source)
 					.setMessage(R.string.about_text)
-					.setNeutralButton(R.string.action_ok, null).show();
+					.setNeutralButton(android.R.string.ok, null).show();
 
 			return true;
 		}

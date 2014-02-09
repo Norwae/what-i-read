@@ -15,21 +15,14 @@
     <string name="action_delete">Löschen</string>
     <string name="action_save">Speichern</string>
     <string name="action_add">Hinzufügen</string>
-    <string name="action_ok">OK</string>
     <string name="action_edit">Bearbeiten</string>
-    <string name="action_cancel">Abbrechen</string>
     <string name="action_about">Über "Leseliste"</string>
     <string name="action_sort">Sortieren</string>
     
-    
-    <string name="sepOr">--- oder ---</string>
-    
+    <string name="title_input_isbn">ISBN-13 eingeben:</string>    
     <string name="invalid_isbn">ISBN ungültig</string>
     
-    <string name="fragment_title_register">Erfassen</string>
-    <string name="fragment_title_browse">Stöbern</string>
-    
-    <string name="input_title">Suche</string>
+    <string name="input_title">Stöbern</string>
 	<string name="about_text">Herzlich willkommen in "Leseliste". Scannen Sie den Barcode eines Buches, oder geben Sie die 13-Stellige ISBN ein, um ein Buch zu erfassen. Sie erhalten eine Nachricht, ob dieses Buch schon gelesen ist.\n\nDiese App ist freie Software. Lizenz und Quelltext unter https://github.com/Norwae/what-i-read.\n\nPowered by Google Books.</string>
     
     <string name="title">Titel</string>

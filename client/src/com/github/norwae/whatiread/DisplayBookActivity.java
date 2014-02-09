@@ -42,30 +42,11 @@ public class DisplayBookActivity extends Activity {
 
 		initViewFields();
 
-		Button save = (Button) findViewById(R.id.save);
-		save.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				saveAndReturn();
-			}
-		});
-
-		Button delete = (Button) findViewById(R.id.delete);
-
-		delete.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				deleteAndReturn();
-			}
-		});
-
 		if (getIntent().getExtras().getBoolean(WARN_FOR_READ_BOOKS_VARIABLE)
 				&& !info.isAddition()) {
 			AlertDialog alert = new AlertDialog.Builder(this)
 					.setMessage(getString(R.string.alert_alreadyKnown))
-					.setNegativeButton(R.string.action_ok,
+					.setNegativeButton(android.R.string.ok,
 							new DialogInterface.OnClickListener() {
 
 								@Override
@@ -137,12 +118,20 @@ public class DisplayBookActivity extends Activity {
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		getMenuInflater().inflate(R.menu.main, menu);
+		getMenuInflater().inflate(R.menu.display_book, menu);
 		return true;
 	}
 
 	@Override
 	public boolean onMenuItemSelected(int featureId, MenuItem item) {
+		switch (item.getItemId()) {
+		case R.id.save:
+			saveAndReturn();
+			return true;
+		case R.id.delete:
+			deleteAndReturn();
+			return true;
+		}
 		return menuHandler.handleMenuSelected(this, item.getItemId())
 				|| super.onMenuItemSelected(featureId, item);
 	}
