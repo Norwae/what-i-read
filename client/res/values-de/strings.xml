@@ -4,9 +4,6 @@
     <string name="pref_desc_serverurl">URL Datenbank-Servers.</string>
 	<string name="pref_name_account">Anmeldekonto</string>
     <string name="pref_desc_account">Konto, für das die Buchinformationen gespeichert werden.</string>
-    <string name="pref_name_https">Sichere Verbindung verwenden</string>
-    <string name="pref_desc_https_on">Sichere Verbindungen verhindern, das jemand die Buchdaten mitliest. Sie sind allerdings etwas langsamer.</string>
-    <string name="pref_desc_https_off">Unsichere Verbindungen sind schneller und verwenden weniger Transfer. Theoretisch kann jemand alle Buchinformationen mitlesen.</string>
     
     <string name="app_name">Leseliste</string>
     <string name="action_settings">Einstellungen</string>
@@ -22,8 +19,8 @@
     <string name="title_input_isbn">ISBN-13 eingeben:</string>    
     <string name="invalid_isbn">ISBN ungültig</string>
     
-    <string name="input_title">Stöbern</string>
-	<string name="about_text">Herzlich willkommen in "Leseliste". Scannen Sie den Barcode eines Buches, oder geben Sie die 13-Stellige ISBN ein, um ein Buch zu erfassen. Sie erhalten eine Nachricht, ob dieses Buch schon gelesen ist.\n\nDiese App ist freie Software. Lizenz und Quelltext unter https://github.com/Norwae/what-i-read.\n\nPowered by Google Books.</string>
+    <string name="input_title">Meine Bücher</string>
+	<string name="about_text">Herzlich willkommen in "Leseliste". Scannen Sie den Barcode eines Buches (Kamera), oder geben Sie die 13-Stellige ISBN ein (Stift), um ein Buch zu erfassen. Sie erhalten eine Nachricht, ob dieses Buch schon bekannt ist.\n\nDiese App ist freie Software. Lizenz und Quelltext unter https://github.com/Norwae/what-i-read.\n\nPowered by Google Books.</string>
     
     <string name="title">Titel</string>
     <string name="author">Autor</string>
@@ -41,5 +38,5 @@
     <string name="serverIOError">Fehler: Server nicht verfügbar</string>
 	
 	<string name="barcode_scanner.download.title">Barcode Scanner installieren?</string>
-	<string name="barcode_scanner.download.message">Für die Scanfunktion wird ein Barcode-scanner benötigt. Soll dieser nun installiert werden?</string>
+	<string name="barcode_scanner.download.message">Für die Scanfunktion wird ein Barcodescanner benötigt. Soll ein Scanner installiert werden?</string>
 </resources>

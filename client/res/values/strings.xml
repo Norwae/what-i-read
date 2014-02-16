@@ -4,9 +4,6 @@
     <string name="pref_desc_serverurl">URL for storage server.</string>
 	<string name="pref_name_account">Google account</string>
     <string name="pref_desc_account">Account to use for server access.</string>
-    <string name="pref_name_https">Secure connections</string>
-    <string name="pref_desc_https_on">Using a secure connection protects your data from snooping. It might take a little longer, though</string>
-    <string name="pref_desc_https_off">Using a insecure connection is slightly faster and transfers less data.</string>
     
     <string name="app_name">What I Read</string>
     
@@ -23,7 +20,7 @@
     <string name="title_input_isbn">Input ISBN-13</string>
     <string name="invalid_isbn">Invalid ISBN</string>
     
-    <string name="input_title">Browse</string>
+    <string name="input_title">My Books</string>
     <string name="about_text">Welcome to "what i read". Please note that this is a project still under active development. This application allows you to input books (either by scanning a barcode, or entering their 13-digit ISBN). You will be notified if you read the book before. Additionally, you browse through the books you\'ve already marked as read. We hope you will enjoy this application.\n\nThis application is free software. You can retrieve the source code and licence at https://github.com/Norwae/what-i-read.\n\nThe ISBN metadata lookup is powered by Google Books.</string>
     
     <string name="title">Title</string>
