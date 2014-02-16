@@ -1,5 +1,7 @@
 package data
 
+import "time"
+
 type KeyStringer interface {
 	KeyString(string) string
 }
@@ -36,5 +38,8 @@ type LookupReply struct {
 }
 
 type Bookshelf struct {
-	Books []BookMetaData
+	Owner      string    `datastore:"-"`
+	LastUpdate time.Time `datastore:",noindex"`
+	Version    int
+	Books      []BookMetaData `datastore:-`
 }
