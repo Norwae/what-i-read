@@ -2,10 +2,6 @@ package data
 
 import "time"
 
-type KeyStringer interface {
-	KeyString(string) string
-}
-
 type VolumeInfo struct {
 	Title       string     `json:"title"`
 	Subtitle    string     `json:"subtitle,omitempty"`
@@ -18,10 +14,11 @@ type VolumeInfo struct {
 }
 
 type BookMetaData struct {
-	Volume  VolumeInfo `json:"volumeInfo" datastore:",noindex"`
-	Comment string     `json:"comment,omitempty" datastore:",noindex"`
-	ISBN    string     `json:"isbn" datastore:",noindex"`
-	Known   bool       `json:"known" datastore:"-"`
+	Volume  VolumeInfo  `json:"volumeInfo" datastore:",noindex"`
+	Comment string      `json:"comment,omitempty" datastore:",noindex"`
+	ISBN    string      `json:"isbn" datastore:",noindex"`
+	Known   bool        `json:"known" datastore:"-"`
+	Parent  interface{} `json:"-" datastore:"-"`
 }
 
 type ImageLinks struct {

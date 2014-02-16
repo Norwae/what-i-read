@@ -6,37 +6,23 @@ import (
 	mc "appengine/memcache"
 	"data"
 	"isbn13"
-	"sync"
 )
 
-const kindBookInfo = "book"
+func LookupISBN(ctx ae.Context, country string, isbn isbn13.ISBN13) (resp *data.BookMetaData, err error) {
+	keyString := data.BookInfoPrototypeKey(ctx, isbn, country)
+	target := new(data.BookMetaData)
 
-func LookupISBN(ctx ae.Context, country string, isbn isbn13.ISBN13) (*data.BookMetaData, error) {
-	keyString := isbn.KeyString(country)
-	if result, err := lookupISBNMemcache(ctx, keyString); err == nil {
-		return result, err
-	}
+	if _, err = mc.Gob.Get(ctx, keyString, target); err == nil {
+		target.Parent = country
+		resp = target
+	} else {
+		key := ds.NewKey(ctx, data.KindBookInfo, keyString, 0, nil)
 
-	return lookupISBNDatastore(ctx, keyString)
-}
-
-func lookupISBNDatastore(ctx ae.Context, keyStr string) (resp *data.BookMetaData, err error) {
-	key := ds.NewKey(ctx, kindBookInfo, keyStr, 0, nil)
-	found := new(data.BookMetaData)
-
-	if err = ds.Get(ctx, key, found); err == nil {
-		resp = found
-		cacheISBNResult(ctx, keyStr, resp)
-	}
-
-	return
-}
-
-func lookupISBNMemcache(ctx ae.Context, key string) (resp *data.BookMetaData, err error) {
-	found := new(data.BookMetaData)
-
-	if _, err = mc.Gob.Get(ctx, key, found); err == nil {
-		resp = found
+		if err = ds.Get(ctx, key, target); err == nil {
+			resp = target
+			resp.Parent = country
+			cacheISBNResult(ctx, keyString, resp)
+		}
 	}
 
 	return
@@ -51,26 +37,7 @@ func cacheISBNResult(ctx ae.Context, key string, data *data.BookMetaData) {
 	mc.Gob.Add(ctx, &item)
 }
 
-func putISBNResult(ctx ae.Context, keyStr string, data *data.BookMetaData) {
-	key := ds.NewKey(ctx, kindBookInfo, keyStr, 0, nil)
-	_, err := ds.Put(ctx, key, data)
-
-	ctx.Infof("Put %s with result %v", keyStr, err)
-}
-
 func StoreISBNResult(ctx ae.Context, country string, isbn isbn13.ISBN13, book *data.BookMetaData) {
-	keyStr := isbn.KeyString(country)
-
-	var group sync.WaitGroup
-	group.Add(2)
-
-	wrap := func(f func(ae.Context, string, *data.BookMetaData)) {
-		defer group.Done()
-		f(ctx, keyStr, book)
-	}
-
-	go wrap(cacheISBNResult)
-	go wrap(putISBNResult)
-
-	group.Wait()
+	cacheISBNResult(ctx, data.BookInfoPrototypeKey(ctx, isbn, country), book)
+	ds.Put(ctx, book.DeriveKey(ctx), book)
 }

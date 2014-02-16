@@ -5,6 +5,7 @@ import (
 	"data"
 	"encoding/json"
 	"errors"
+	"persistence/tx"
 	"googlebooks"
 	"isbn13"
 	"net/http"
@@ -96,13 +97,11 @@ func serveVolumeBulk(call *Call) (interface{}, error) {
 	switch call.Request.Method {
 	case "GET":
 		shelf, err = getVolumeBulk(call)
-	case "PUT":
-		shelf, err = putVolumeBulk(call)
 	default:
 		call.StatusCode = http.StatusMethodNotAllowed
 
-		call.Response.Header().Add("Allow", "GET, PUT")
-		err = errors.New("Unsupported operation. Only GET and PUT methods are allowed")
+		call.Response.Header().Add("Allow", "GET")
+		err = errors.New("Unsupported operation. Only GET method is allowed")
 	}
 
 	return shelf, err
@@ -113,41 +112,23 @@ func getVolumeBulk(call *Call) (reply *data.LookupReply, err error) {
 
 	if shelf, err = persistence.LookupBookshelf(call.Context); err == nil {
 		call.Context.Debugf("Bookshelf contains %d volumes", len(shelf.Books))
+		
+		infos := shelf.Books
 
 		for _, str := range call.Request.URL.Query()["search"] {
 			matches := shelf.Search(str)
 
-			shelf = &data.Bookshelf{make([]data.BookMetaData, len(matches))}
+			infos = make([]data.BookMetaData, len(matches))
 			for i, ptr := range matches {
-				shelf.Books[i] = *ptr
+				infos[i] = *ptr
 			}
 
-			call.Context.Debugf("Filtered by \"%s\", down to %d entries: %v", str, len(shelf.Books), shelf.Books)
+			call.Context.Debugf("Filtered by \"%s\", down to %d entries: %v", str, len(infos), infos)
 		}
 
 		reply = &data.LookupReply{
-			Count:     len(shelf.Books),
+			Count:     len(infos),
 			BookInfos: shelf.Books,
-		}
-	}
-
-	return
-}
-
-func putVolumeBulk(call *Call) (reply *data.LookupReply, err error) {
-	decode := json.NewDecoder(call.Request.Body)
-	shelf := new(data.Bookshelf)
-	if err = decode.Decode(shelf); err == nil {
-		for i := range shelf.Books {
-			book := &shelf.Books[i]
-			normalize(call, book)
-		}
-
-		if err = persistence.StoreBookshelf(call.Context, shelf); err == nil {
-			reply = &data.LookupReply{
-				Count:     len(shelf.Books),
-				BookInfos: shelf.Books,
-			}
 		}
 	}
 
@@ -180,11 +161,11 @@ func serveVolumeSingle(call *Call) (interface{}, error) {
 
 func deleteVolumeSingle(call *Call, isbn isbn13.ISBN13) (info *data.BookMetaData, err error) {
 	call.Context.Infof("Deleting ISBN %d", isbn)
-	err = persistence.UpdateBookshelf(call.Context, func(tx *persistence.Transaction, shelf *data.Bookshelf) error {
+	err = persistence.UpdateBookshelf(call.Context, func(t *tx.Transaction, shelf *data.Bookshelf) error {
 		for i := range shelf.Books {
 			if ptr := &shelf.Books[i]; ptr.ISBN == isbn.String() {
 				shelf.Books = append(shelf.Books[:i], shelf.Books[i+1:]...)
-				tx.Delete = []data.KeyStringer{ptr}
+				t.Delete = []tx.KeyDeriver{ptr}
 				return nil
 			}
 
@@ -206,14 +187,15 @@ func putVolumeSingle(call *Call, isbn isbn13.ISBN13) (info *data.BookMetaData, e
 		normalize(call, info)
 		call.Context.Debugf("Normalized decoded entity: %v", info)
 
-		persistence.UpdateBookshelf(call.Context, func(tx *persistence.Transaction, shelf *data.Bookshelf) error {
+		persistence.UpdateBookshelf(call.Context, func(t *tx.Transaction, shelf *data.Bookshelf) error {
 
 			if ptr := shelf.LookupInfo(isbn); ptr != nil {
 				*ptr = *info
-				tx.Put = []data.KeyStringer{ptr}
+				t.Put = []tx.KeyDeriver{ptr}
 			} else {
+				info.Parent = shelf
 				shelf.Books = append(shelf.Books, *info)
-				tx.Put = []data.KeyStringer{info}
+				t.Put = []tx.KeyDeriver{info}
 			}
 
 			return nil

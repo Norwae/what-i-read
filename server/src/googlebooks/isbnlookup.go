@@ -25,7 +25,7 @@ var ErrorAPIRejected = errors.New("googlebooks-api: request rejected due to high
 const placeHolderText = "Unknown ISBN: "
 
 /**
-Retrieves ISBN metadata from google books. The method enforces a limit of 1 lookup per 15 seconds. 
+Retrieves ISBN metadata from google books. The method enforces a limit of 1 lookup per 15 seconds.
 If a  user exceeds this limit, the request is denied, and ErrAPIRejected is returned.
 */
 func LookupISBN(ctx appengine.Context, country string, isbn isbn13.ISBN13) (*data.BookMetaData, error) {
@@ -39,7 +39,7 @@ func LookupISBN(ctx appengine.Context, country string, isbn isbn13.ISBN13) (*dat
 		result, callErr = lookupISBNGlobal(ctx, country, isbn)
 	}
 
-	if limitErr := limiter.Run(key, closure); limitErr == nil {
+	if limitErr := limiter.Queue(key, 10*time.Second, closure); limitErr == nil {
 		return result, callErr
 	} else {
 		return nil, ErrorAPIRejected
@@ -47,7 +47,7 @@ func LookupISBN(ctx appengine.Context, country string, isbn isbn13.ISBN13) (*dat
 }
 
 /*
-Enforces the global google books API limit of 1 request / user / second. 
+Enforces the global google books API limit of 1 request / user / second.
 
 Since all our requests look alike (we are all the same user, identified by an API key), we need to queue the requests up, and wait for a slot. This is
 done up to a maximum of wait time of 30 seconds, then a timeout abort is reported.
@@ -69,7 +69,7 @@ func lookupISBNGlobal(ctx appengine.Context, country string, isbn isbn13.ISBN13)
 }
 
 /*
-Does the actual google books API call. 
+Does the actual google books API call.
 */
 func lookupISBN(ctx appengine.Context, country string, isbn isbn13.ISBN13) (resp *data.BookMetaData, err error) {
 	var r *http.Response
@@ -97,6 +97,7 @@ func lookupISBN(ctx appengine.Context, country string, isbn isbn13.ISBN13) (resp
 					resp.Volume.Title = placeHolderText + isbn.String()
 				}
 
+				resp.Parent = country
 				resp.ISBN = isbn.String()
 			}
 		}

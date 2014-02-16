@@ -1,9 +1,14 @@
 package data
 
 import (
+	ae "appengine"
+	ds "appengine/datastore"
+	"appengine/user"
 	"isbn13"
 	"strings"
 )
+
+const KindBookshelf = "bookshelf"
 
 func (shelf *Bookshelf) Search(term string) (r []*BookMetaData) {
 	r = make([]*BookMetaData, 0, len(shelf.Books))
@@ -44,4 +49,8 @@ func (shelf *Bookshelf) LookupInfo(isbn isbn13.ISBN13) *BookMetaData {
 	}
 
 	return nil
+}
+
+func (shelf *Bookshelf) DeriveKey(ctx ae.Context) *ds.Key {
+	return ds.NewKey(ctx, KindBookshelf, user.Current(ctx).ID, 0, nil)
 }
