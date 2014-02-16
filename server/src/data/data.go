@@ -33,13 +33,14 @@ type ImageLinks struct {
 }
 
 type LookupReply struct {
-	Count     int            `json:"totalItems"`
-	BookInfos []BookMetaData `json:"items"`
+	Count      int            `json:"totalItems"`
+	LastUpdate time.Time      `json:"timestamp"`
+	BookInfos  []BookMetaData `json:"items"`
 }
 
 type Bookshelf struct {
-	Owner      string    `datastore:"-"`
-	LastUpdate time.Time `datastore:",noindex"`
-	Version    int
+	Owner      string         `datastore:"-"`
+	LastUpdate time.Time      `datastore:",noindex"`
+	Version    int            `datastore:",noindex"`
 	Books      []BookMetaData `datastore:-`
 }
