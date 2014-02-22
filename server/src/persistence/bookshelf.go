@@ -99,21 +99,22 @@ func LookupBookshelfMeta(ctx ae.Context) (*data.Bookshelf, error) {
 	user := user.Current(ctx).ID
 	shelf, err := lookupShelfMemcache(ctx, user)
 
-	if err == nil {
-		return shelf, nil
+	if err != nil {
+		ctx.Debugf("Cache miss, looking up DS")
+
+		shelf = new(data.Bookshelf)
+		shelfKey := ds.NewKey(ctx, data.KindBookshelf, user, 0, nil)
+
+		if err = ds.Get(ctx, shelfKey, shelf); err == ds.ErrNoSuchEntity {
+			shelf.Version = Latest
+			shelf.LastUpdate = time.Now()
+			ctx.Debugf("First request new user, now is %v", shelf.LastUpdate)
+			err = nil
+		}
 	}
-	
-	ctx.Debugf("Cache miss, looking up DS")
 
-	shelf = new(data.Bookshelf)
-
-	shelfKey := ds.NewKey(ctx, data.KindBookshelf, user, 0, nil)
-
-	if err = ds.Get(ctx, shelfKey, shelf); err == ds.ErrNoSuchEntity {
-		shelf.Version = Latest
+	if shelf.Version == 0 {
 		shelf.LastUpdate = time.Now()
-		ctx.Debugf("First request new user, now is %v", shelf.LastUpdate)
-		err = nil
 	}
 
 	return shelf, err
