@@ -27,6 +27,7 @@ func updateBookshelf(f func(*tx.Transaction, *data.Bookshelf) error) func(ae.Con
 			if err = f(&tx, shelf); err == nil {
 				shelf.LastUpdate = time.Now()
 				shelf.Version = Latest
+				tx.Put = append(tx.Put, shelf)
 				tx.Commit()
 
 				storeShelfMemcache(ctx, user.Current(ctx).ID, shelf)
