@@ -5,11 +5,11 @@ import (
 	"data"
 	"encoding/json"
 	"errors"
-	"persistence/tx"
 	"googlebooks"
 	"isbn13"
 	"net/http"
 	"persistence"
+	"persistence/tx"
 )
 
 type Call struct {
@@ -88,6 +88,22 @@ func (function CallHandler) ServeHTTP(w http.ResponseWriter, rq *http.Request) {
 func init() {
 	http.Handle("/volumes/", CallHandler(serveVolumeSingle))
 	http.Handle("/volumes", CallHandler(serveVolumeBulk))
+	http.Handle("/ping", CallHandler(servePing))
+}
+
+func servePing(call *Call) (interface{}, error) {
+	call.Context.Infof("Ping called")
+	if call.Request.Method == "GET" {
+		shelf, err := persistence.LookupBookshelfMeta(call.Context)
+
+		return shelf.LastUpdate, err
+	} else {
+		call.StatusCode = http.StatusMethodNotAllowed
+
+		call.Response.Header().Add("Allow", "GET")
+		err := errors.New("Unsupported operation. Only GET method is allowed")
+		return nil, err
+	}
 }
 
 func serveVolumeBulk(call *Call) (interface{}, error) {
@@ -112,7 +128,7 @@ func getVolumeBulk(call *Call) (reply *data.LookupReply, err error) {
 
 	if shelf, err = persistence.LookupBookshelf(call.Context); err == nil {
 		call.Context.Debugf("Bookshelf contains %d volumes", len(shelf.Books))
-		
+
 		infos := shelf.Books
 
 		for _, str := range call.Request.URL.Query()["search"] {
