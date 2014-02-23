@@ -36,15 +36,20 @@ public class BookInfo implements Serializable {
 			throws JSONException, URISyntaxException {
 		List<BookInfo> infos = new ArrayList<BookInfo>();
 		JSONObject json = new JSONObject(jsonString);
-		JSONArray items = json.getJSONArray("items");
-
-		if (items != null) {
-			for (int i = 0; i < items.length(); i++) {
-				BookInfo info = new BookInfo();
-
-				info.parseJSON(items.getJSONObject(i));
-				
-				infos.add(info);
+		
+		int nr = json.getInt("totalItems");
+		
+		if (nr > 0) {
+			JSONArray items = json.getJSONArray("items");
+	
+			if (items != null) {
+				for (int i = 0; i < items.length(); i++) {
+					BookInfo info = new BookInfo();
+	
+					info.parseJSON(items.getJSONObject(i));
+					
+					infos.add(info);
+				}
 			}
 		}
 		return infos;

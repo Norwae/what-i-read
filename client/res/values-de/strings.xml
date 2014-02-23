@@ -36,6 +36,7 @@
     
     <string name="alert.alreadyKnown">Du hast dieses Buch schon gelesen</string>
     <string name="serverIOError">Fehler: Server nicht verfügbar</string>
+    <string name="nothingFound">Keine (passenden) Bücher gefunden. Bitte verwende Kamera oder Stift, um Bücher hinzuzufügen.</string>
 	
 	<string name="barcode_scanner.download.title">Barcode Scanner installieren?</string>
 	<string name="barcode_scanner.download.message">Für die Scanfunktion wird ein Barcodescanner benötigt. Soll ein Scanner installiert werden?</string>

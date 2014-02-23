@@ -226,6 +226,7 @@ public class MainActivity extends Activity {
 				R.id.searchTrigger, R.id.orderTrigger) {
 			@Override
 			protected void onAsyncResult(List<BookInfo> aResult) {
+				String message = null;
 				if (aResult != null) {
 					ListView list = getDisplayList();
 					Log.d("search-result",
@@ -233,15 +234,21 @@ public class MainActivity extends Activity {
 									+ " Books");
 					ListAdapter adapter = new BookInfoListAdapter(aResult);
 					list.setAdapter(adapter);
-
 					list.invalidate();
+					
+					if (aResult.isEmpty()) {
+						message = getString(R.string.nothingFound);						
+					}
 				} else {
-					Toast.makeText(MainActivity.this,
-							getString(R.string.serverIOError),
-							Toast.LENGTH_SHORT).show();
-
+					message = getString(R.string.serverIOError);
 				}
-			}
+				
+				if (message != null) {
+					Toast.makeText(MainActivity.this,
+							message,
+							Toast.LENGTH_SHORT).show();
+				}
+			}			
 		};
 
 		BookSearch query = new BookSearch(receiver, this);
