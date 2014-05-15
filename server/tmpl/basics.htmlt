@@ -1,0 +1,11 @@
+{{define "DEFAULT"}}
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>What-I-Read web interface</title>
+	</head>
+	<body>
+		{{template "CONTENT"}}
+	</body>
+</html>
+{{end}}
