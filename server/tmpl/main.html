@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>What-I-Read web interface</title>
+		<script src="/static/js/jquery-2.1.1.min.js"></script>
+		<script src="/static/js/bootstrap.min.js"></script>
+		<link rel="stylesheet" href="/static/css/bootstrap.min.css" type="text/css"/>
+		<link rel="stylesheet" href="/static/css/bootstrap-theme.min.css" type="text/css"/>
+	</head>
+	<body>
+	 <form action="/index.html" method="GET">
+	 	<input type="text" name="search">
+	 	<input type="submit" value="search"/>
+	 </form>
+	 <p>Found a total {{.Count}} Books</p>
+	</body>
+</html>

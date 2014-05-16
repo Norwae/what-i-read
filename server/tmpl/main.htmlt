@@ -1,4 +1,0 @@
-{{define "CONTENT"}}
-	Foo
-{{end}}
-{{template "DEFAULT"}}
