@@ -9,26 +9,34 @@
 	<script src="/static/js/bootstrap.min.js"></script>
 	<link rel="stylesheet" href="/static/css/bootstrap.min.css" type="text/css"/>
 	<link rel="stylesheet" href="/static/css/bootstrap-theme.min.css" type="text/css"/>
+	<link rel="stylesheet" href="/static/css/private.css" type="text/css"/>
   </head>
   <body>
-  	<h1>My Books</h1>
-	<form action="/index.html" method="GET">
-	  <input type="text" name="search">
-	  <button type="submit">
+  	<h1 class="container-fluid">My Books</h1>
+	<form action="/index.html" method="GET" class="container-fluid form-inline" role="form">
+	  <label class="sr-only" for="search">Book Keyword</label>
+	  <input id="search" type="search" name="search" class="form-control" placeholder="Search Term">
+	  <button type="submit" class="btn btn-primary">
 	    <span class="glyphicon glyphicon-search"></span>
 	  </button>
     </form>
-    <ul>
-    	{{range .BookInfos}}
-    		<li>
-    		  <a href="/book/{{.ISBN}}.html">
+    <div class="container-fluid">
+      <ul class="list-unstyled">
+ 	    {{range .BookInfos}}
+    	  <li >
+    		<a href="/book/{{.ISBN}}.html">
+    		  <div class="row">
     		    <h2>{{.Volume.Title}}</h2>
-    		    <span>{{range .Volume.Authors}}<span class="author">{{.}}</span><span class="authorSep">, </span>{{end}}</span>
-    		    <span>{{.Volume.Subtitle}}</span>
-    		  </a>
-    		</li>
-    	{{end}}
-    </ul>
-    <p>Found a total {{.Count}} Books</p>
+    		  </div>
+    		  <div class="row">
+    		    <span class="small col-md-6">{{range .Volume.Authors}}<span class="author">{{.}}</span><span class="authorSep">, </span>{{end}}</span>
+    		    <span class="small col-md-6">{{.Volume.Subtitle}}</span>
+    		  </div>
+    		</a>
+    	  </li>
+        {{end}}
+      </ul>
+      <p>Found a total {{.Count}} Books</p>
+    </div>
   </body>
 </html>
