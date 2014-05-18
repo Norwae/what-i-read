@@ -82,10 +82,8 @@ func (function CallHandler) ServeHTTP(w http.ResponseWriter, rq *http.Request) {
 	encoder := json.NewEncoder(w)
 	call.Response.WriteHeader(call.StatusCode)
 
-	if call.StatusCode != http.StatusNoContent {
-		call.Context.Debugf("Returning %v to client", result)
-		encoder.Encode(result)
-	}
+	call.Context.Debugf("Returning %v to client", result)
+	encoder.Encode(result)
 }
 
 func init() {
@@ -179,7 +177,6 @@ func serveVolumeSingle(call *Call) (interface{}, error) {
 			book, err = putVolumeSingle(call, isbn)
 		case "DELETE":
 			book, err = deleteVolumeSingle(call, isbn)
-			call.StatusCode = http.StatusNoContent
 		default:
 			call.StatusCode = http.StatusMethodNotAllowed
 			call.Response.Header().Add("Allow", "GET, PUT, DELETE")
