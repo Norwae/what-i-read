@@ -6,10 +6,13 @@
   <title>What-I-Read web interface</title>
   <script src="/static/js/jquery-2.1.1.min.js"></script>
   <script src="/static/js/bootstrap.min.js"></script>
+  {{if .}}
   <script src="/static/js/{{.}}.js"></script>
+  <link rel="stylesheet" href="/static/css/{{.}}.css" type="text/css"/>
+  {{end}}
   <link rel="stylesheet" href="/static/css/bootstrap.min.css" type="text/css"/>
   <link rel="stylesheet" href="/static/css/bootstrap-theme.min.css" type="text/css"/>
   <link rel="stylesheet" href="/static/css/private.css" type="text/css"/>
-  <link rel="stylesheet" href="/static/css/{{.}}.css" type="text/css"/>
+  <link rel="icon" href="/static/logo.png"/>
 </head>
 {{end}}

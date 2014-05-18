@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="en">
+  {{template "head_section"}}
+  <body>
+  	<h1 class="container-fluid">Error</h1>
+	<p>Sorry, the application has hit a snag. Here's the errors reported. Try and make sense of them, will you
+	
+	<ul class="list-group">
+	{{range .}}
+	  <li class="list-group-item">{{.}}</li>
+	{{end}}
+	</ul>
+</html>

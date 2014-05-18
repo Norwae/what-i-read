@@ -9,6 +9,7 @@ import (
 	"isbn13"
 	"net/http"
 	"persistence"
+	"strings"
 )
 
 type Call struct {
@@ -80,8 +81,11 @@ func (function CallHandler) ServeHTTP(w http.ResponseWriter, rq *http.Request) {
 
 	encoder := json.NewEncoder(w)
 	call.Response.WriteHeader(call.StatusCode)
-	call.Context.Debugf("Returning %v to client", result)
-	encoder.Encode(result)
+
+	if call.StatusCode != http.StatusNoContent {
+		call.Context.Debugf("Returning %v to client", result)
+		encoder.Encode(result)
+	}
 }
 
 func init() {
@@ -155,7 +159,16 @@ func putVolumeBulk(call *Call) (reply *data.LookupReply, err error) {
 }
 
 func serveVolumeSingle(call *Call) (interface{}, error) {
-	isbn, err := isbn13.New(call.Request.URL.Path[9:])
+	path := call.Request.URL.Path
+	if idx := strings.Index(path[1:], "/"); idx > 0 {
+		path = path[2+idx:]
+	}
+
+	if idx := strings.LastIndex(path, "."); idx > 0 {
+		path = path[:idx]
+	}
+
+	isbn, err := isbn13.New(path)
 	var book *data.BookMetaData
 
 	if err == nil {
@@ -166,6 +179,7 @@ func serveVolumeSingle(call *Call) (interface{}, error) {
 			book, err = putVolumeSingle(call, isbn)
 		case "DELETE":
 			book, err = deleteVolumeSingle(call, isbn)
+			call.StatusCode = http.StatusNoContent
 		default:
 			call.StatusCode = http.StatusMethodNotAllowed
 			call.Response.Header().Add("Allow", "GET, PUT, DELETE")
