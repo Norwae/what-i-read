@@ -9,12 +9,13 @@ import (
 var searchPage, errorPage, bookPage *template.Template
 
 func init() {
-	http.Handle("/", http.RedirectHandler("/index.html", http.StatusMovedPermanently))
+	http.Handle("/", http.RedirectHandler("/index.html", http.StatusFound))
 	http.Handle("/index.html", http.HandlerFunc(serveStartPage))
 	http.Handle("/book/", http.HandlerFunc(serveBookPage))
 
 	searchPage = template.Must(template.ParseFiles("tmpl/main.html", "tmpl/headers.html"))
 	errorPage = template.Must(template.ParseFiles("tmpl/error.html", "tmpl/headers.html"))
+	bookPage = template.Must(template.ParseFiles("tmpl/book.html", "tmpl/headers.html"))
 }
 
 func serveStartPage(rsp http.ResponseWriter, rq *http.Request) {
@@ -41,7 +42,13 @@ func serveBookPage(rsp http.ResponseWriter, rq *http.Request) {
 		Response: rsp,
 	}
 
-	if _, err := serveVolumeSingle(&call); err == nil {
+	if obj, err := serveVolumeSingle(&call); err == nil {
+		if rq.Method != "GET" {
+			call.Context.Infof("Returning no data - PUT or DELETE");
+			rsp.WriteHeader(http.StatusNoContent)
+		} else {
+			call.Context.Infof("Returning book page template (%s)", bookPage.Execute(rsp, obj))
+		}
 	} else {
 		rsp.WriteHeader(http.StatusInternalServerError)
 

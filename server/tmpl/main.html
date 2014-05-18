@@ -24,10 +24,10 @@
     		<a href="/book/{{.ISBN}}.html" data-isbn="{{.ISBN}}">
     		  <div class="row">
     		    <h2 class="col-md-10">{{.Volume.Title}}</h2>
-    		    <button class="col-md-1">
+    		    <button class="col-md-1 btn btn-default">
     		    	<span class="glyphicon glyphicons-edit"/>
     		    </button>
-    		    <button class="col-md-1">
+    		    <button class="col-md-1 btn btn-danger">
     		    	<span class="glyphicon glyphicon-trash"/>
     		    </button>
     		  </div>
@@ -45,7 +45,7 @@
     	<div id="shade"></div>
     	<form role="form" id="input-isbn" role="form">
     		<input id="isbn" name="isbn" type="text" class="form-control" placeholder="ISBN-13"/>
-    		<button class="btn" id="addISBN">
+    		<button class="btn btn-default" id="addISBN">
     			<span>Add book</span>
     		</button>
     	</form>

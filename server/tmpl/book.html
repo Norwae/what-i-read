@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+  {{template "head_section" "book"}}
+  <body>
+  	<h1 class="container-fluid">Book Information</h1>
+  	<div class="container"><div class="row">
+  	  <form role="form" class="col-md-10">
+  	    <div class="form-group">
+  	      <label for="title">Title:</label>
+  	      <input name="title" id="title" type="text" class="form-control" value="{{.Volume.Title}}"/>
+  	    </div>
+  	    <div class="form-group">
+  	      <label for="subtitle">Subtitle:</label>
+  	      <input name="subtitle" id="subtitle" type="text" class="form-control" value="{{.Volume.Subtitle}}"/>
+  	    </div>
+  	    <div class="form-group">
+  	      <label for="series">Series:</label>
+  	      <input name="series" id="series" type="text" class="form-control" value="{{.Volume.Series}}"/>
+  	    </div>
+  	    <div class="form-group">
+  	      <label for="nrPages"># Pages:</label>
+  	      <div>{{.Volume.PageCount}}</div>
+  	    </div>
+  	    <div class="form-group">
+  	      <label for="publisher">Publisher:</label>
+  	      <input name="publisher" id="publisher" type="text" class="form-control" value="{{.Volume.Publisher}}"/>
+  	    </div>
+  	    <div class="form-group">
+  	      <label for="authors">Authors:</label>
+  	      <div id="authors">{{range .Volume.Authors}}<span class="author">{{.}}</span><span class="authorSep">, </span>{{end}}</div>
+  	    </div>
+  	    <div class="form-group">
+  	      <label for="isbn">ISBN:</label>
+  	      <div id="isbn">{{.ISBN}}</div>
+  	    </div>
+  	    <div class="form-group">
+  	      <label for="description">Description:</label>
+  	      <textarea name="description" id="description" type="text" class="form-control">{{.Volume.Description}}</textArea>
+  	    </div>
+  	    <div class="form-group">
+  	      <label for="comment">Comment:</label>
+  	      <textarea name="comment" id="comment" type="text" class="form-control">{{.Comment}}</textArea>
+  	    </div>
+  	  </form>
+      {{if .Volume.Images.Thumbnail}}
+  		<img src="{{.Volume.Images.Thumbnail}}" class="col-md-2"/>
+      {{end}}
+      </div>
+  	</div>
+</html>
