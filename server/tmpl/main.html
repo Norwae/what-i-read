@@ -7,6 +7,7 @@
 	<title>What-I-Read web interface</title>
 	<script src="/static/js/jquery-2.1.1.min.js"></script>
 	<script src="/static/js/bootstrap.min.js"></script>
+	<script src="/static/js/main.js"></script>
 	<link rel="stylesheet" href="/static/css/bootstrap.min.css" type="text/css"/>
 	<link rel="stylesheet" href="/static/css/bootstrap-theme.min.css" type="text/css"/>
 	<link rel="stylesheet" href="/static/css/private.css" type="text/css"/>
@@ -14,19 +15,32 @@
   <body>
   	<h1 class="container-fluid">My Books</h1>
 	<form action="/index.html" method="GET" class="container-fluid form-inline" role="form">
-	  <label class="sr-only" for="search">Book Keyword</label>
-	  <input id="search" type="search" name="search" class="form-control" placeholder="Search Term">
-	  <button type="submit" class="btn btn-primary">
-	    <span class="glyphicon glyphicon-search"></span>
-	  </button>
+	  <div class="row">
+	    <label class="sr-only" for="search">Book Keyword</label>
+	    <input id="search" type="search" name="search" class="form-control col-md-10" placeholder="Search Term">
+	    <span class="col-md-2">
+		  <button type="submit" class="btn btn-primary">
+		    <span class="glyphicon glyphicon-search"/>
+		  </button>
+	      <button class="btn modalToggle">
+	  	    <span>Input ISBN</span>
+	      </button>
+	    </span>
+	  </div>
     </form>
     <div class="container-fluid">
       <ul class="list-unstyled">
  	    {{range .BookInfos}}
-    	  <li >
-    		<a href="/book/{{.ISBN}}.html">
+    	  <li>
+    		<a href="/book/{{.ISBN}}.html" data-isbn="{{.ISBN}}">
     		  <div class="row">
-    		    <h2>{{.Volume.Title}}</h2>
+    		    <h2 class="col-md-10">{{.Volume.Title}}</h2>
+    		    <button class="col-md-1">
+    		    	<span class="glyphicon glyphicons-edit"/>
+    		    </button>
+    		    <button class="col-md-1">
+    		    	<span class="glyphicon glyphicon-trash"/>
+    		    </button>
     		  </div>
     		  <div class="row">
     		    <span class="small col-md-6">{{range .Volume.Authors}}<span class="author">{{.}}</span><span class="authorSep">, </span>{{end}}</span>
@@ -37,6 +51,16 @@
         {{end}}
       </ul>
       <p>Found a total {{.Count}} Books</p>
+    </div>
+    <div class="container" id="modalContainer" style="display: none">
+    	<div id="shade"></div>
+    	<form role="form" id="input-isbn" role="form">
+    		<input id="isbn" name="isbn" type="text" class="form-control" placeholder="ISBN-13"/>
+    		<button class="btn">
+    			<span>Add book</span>
+    		</button>
+    	</form>
+    	<button id="closeModal" class="close modalToggle">x</button>
     </div>
   </body>
 </html>

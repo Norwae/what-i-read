@@ -24,7 +24,8 @@ func serveStartPage(rsp http.ResponseWriter, rq *http.Request) {
 	}
 
 	if info, err := getVolumeBulk(&call); err == nil {
-		call.Context.Infof("Emitting searchPage template: %v", searchPage.Execute(rsp, info))
+		err := searchPage.Execute(rsp, info)
+		call.Context.Infof("Emitting searchPage template: %v", err)
 	} else {
 		call.Context.Errorf("Emitting error template (%s)", err)
 		rsp.WriteHeader(http.StatusInternalServerError)

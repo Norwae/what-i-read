@@ -1,1 +1,32 @@
-.authorSep:last-of-type {display: none;}
+.authorSep:last-of-type {
+	display: none
+}
+
+#modalContainer #shade {
+	position:absolute;
+	top:0;
+	left:0;
+	background-color: black;
+	z-index: 9999;
+	width: 100%;
+	min-height: 100%;
+	opacity:0.4;
+}
+
+#modalContainer form {
+	position: relative;
+	z-index: 10000;
+	margin-left: 7%;
+	margin-top: 10%;
+	background-color: white;
+	padding: 15px;
+	border-radius: 5px;
+}
+
+#modalContainer .close {
+	color: white;
+	position:absolute;
+	z-index: 10000;
+	top:0;
+	right:0
+}
