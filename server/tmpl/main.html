@@ -1,17 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>What-I-Read web interface</title>
-	<script src="/static/js/jquery-2.1.1.min.js"></script>
-	<script src="/static/js/bootstrap.min.js"></script>
-	<script src="/static/js/main.js"></script>
-	<link rel="stylesheet" href="/static/css/bootstrap.min.css" type="text/css"/>
-	<link rel="stylesheet" href="/static/css/bootstrap-theme.min.css" type="text/css"/>
-	<link rel="stylesheet" href="/static/css/private.css" type="text/css"/>
-  </head>
+  {{template "head_section" "main"}}
   <body>
   	<h1 class="container-fluid">My Books</h1>
 	<form action="/index.html" method="GET" class="container-fluid form-inline" role="form">

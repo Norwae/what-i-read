@@ -13,7 +13,7 @@ func init() {
 	http.Handle("/index.html", http.HandlerFunc(serveStartPage))
 	// http.Handle("/book/", http.HandlerFunc(serveBookPage))
 
-	searchPage = template.Must(template.ParseFiles("tmpl/main.html"))
+	searchPage = template.Must(template.ParseFiles("tmpl/main.html", "tmpl/headers.html"))
 }
 
 func serveStartPage(rsp http.ResponseWriter, rq *http.Request) {
